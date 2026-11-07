@@ -1,0 +1,361 @@
+{
+  "id": "e4066965-6cad-4bab-8483-4a6e640a178c",
+  "title": "HTTP Requests and Responses",
+  "learning_objective": "Explain GET and POST methods and distinguish between 2xx, 4xx, and 5xx response status categories.",
+  "target_level": "Beginner",
+  "difficulty": "Intermediate",
+  "instructor_instructions": "Focus on API debugging practices.",
+  "estimated_duration_minutes": 45,
+  "status": "IN_REVIEW",
+  "created_at": "2026-11-06 18:10:15.956799",
+  "updated_at": "2026-11-06 18:10:15.956803",
+  "sections": [
+    {
+      "id": "3e58e374-ba1a-464d-815f-d837de05c36c",
+      "section_type": "introduction",
+      "title": "1. Introduction",
+      "content": "## Why HTTP Matters\n\nEvery time you click a link, submit a form, or use a mobile app, your device sends an **HTTP request** to a server and receives an **HTTP response**. Understanding the structure of these messages is the foundation of web development and API debugging.\n\nIn this lesson, you will learn how the **GET** and **POST** methods work, how to interpret **2xx, 4xx, and 5xx** status code categories, and how to debug API calls using browser tools and command-line utilities.\n\nThese concepts are standardized in [RFC 9110: HTTP Semantics] and documented by [MDN Web Docs: HTTP request methods & response status codes].",
+      "estimated_minutes": 3,
+      "order_index": 0
+    },
+    {
+      "id": "cdc146e3-c02e-4ff4-8518-8c5cca8d8f36",
+      "section_type": "prerequisites",
+      "title": "2. Prerequisites",
+      "content": "## Before You Start\n\nYou should be comfortable with:\n- Using a web browser and navigating URLs\n- The basic idea of a client (browser/app) talking to a server\n- Opening developer tools (F12 or right-click \u2192 Inspect)\n\nNo prior networking or programming experience is required. This lesson is designed for beginners, though the debugging practices covered are relevant at an intermediate level.",
+      "estimated_minutes": 3,
+      "order_index": 1
+    },
+    {
+      "id": "e9c50225-6641-4c60-9e70-57e5f5d2bcc2",
+      "section_type": "key_concepts",
+      "title": "3. Key Concepts",
+      "content": "## Core Definitions\n\n- **HTTP (Hypertext Transfer Protocol)**: The protocol used for communication between clients and servers on the web [RFC 9110: HTTP Semantics].\n- **Request**: A message sent by the client to the server, containing a method, URL, headers, and optionally a body.\n- **Response**: A message sent by the server back to the client, containing a status code, headers, and optionally a body.\n- **GET**: Requests a representation of a resource. It is *safe* and *idempotent*, meaning it should not change server state and can be repeated without side effects [MDN Web Docs: HTTP request methods & response status codes].\n- **POST**: Submits data to be processed by a resource (e.g., creating a new record). It is not idempotent and typically includes a request body.\n- **Status Code Classes**:\n  - **2xx Success**: The request was received, understood, and accepted.\n  - **4xx Client Error**: The request contains bad syntax or cannot be fulfilled due to client-side issues.\n  - **5xx Server Error**: The server failed to fulfill a valid request.",
+      "estimated_minutes": 6,
+      "order_index": 2
+    },
+    {
+      "id": "ca90bb08-5b7d-4022-ae9d-24cdd59f3e34",
+      "section_type": "detailed_explanations",
+      "title": "4. Detailed Explanations",
+      "content": "## GET Method Deep Dive\n\nGET is used to retrieve data. Parameters are often sent in the URL query string (e.g., `/search?q=api`). Because the data is visible in the URL, GET should never be used for sensitive information like passwords. Responses to GET requests can be cached by browsers and intermediaries [RFC 9110: HTTP Semantics].\n\n## POST Method Deep Dive\n\nPOST is used to submit data to the server, such as creating a user account or uploading a file. The data is placed in the request body, and the `Content-Type` header tells the server how to interpret it (commonly `application/json` or `application/x-www-form-urlencoded`). POST is not idempotent: sending the same POST request twice may create two resources [MDN Web Docs: HTTP request methods & response status codes].\n\n## Status Code Categories\n\n**2xx Success**\n- `200 OK`: Standard successful response.\n- `201 Created`: Resource successfully created (common after POST).\n- `204 No Content`: Successful, but no body to return.\n\n**4xx Client Error**\n- `400 Bad Request`: Malformed request syntax.\n- `401 Unauthorized`: Authentication required.\n- `403 Forbidden`: Authenticated but not permitted.\n- `404 Not Found`: Requested resource does not exist.\n- `429 Too Many Requests`: Rate limiting.\n\n**5xx Server Error**\n- `500 Internal Server Error`: Unexpected server condition.\n- `502 Bad Gateway`: Upstream server returned invalid response.\n- `503 Service Unavailable`: Server temporarily overloaded or down.\n\n## API Debugging Practices\n\n1. **Check the status code first**: 2xx means proceed; 4xx means fix your request; 5xx means report to backend.\n2. **Inspect request and response headers** in browser DevTools \u2192 Network tab.\n3. **Read the response body**: APIs often return JSON error messages explaining the failure.\n4. **Reproduce with curl**: Isolate the request from frontend code.\n5. **Compare working vs. broken requests**: Look at differences in headers, method, and body [HTTP: The Definitive Guide].",
+      "estimated_minutes": 10,
+      "order_index": 3
+    },
+    {
+      "id": "116434e4-af9e-4985-adda-c44e71a03b2e",
+      "section_type": "practical_examples",
+      "title": "5. Practical Examples",
+      "content": "## Example 1: GET Request with curl\n\n```bash\ncurl -i https://api.example.com/users/123\n```\n\nExpected response:\n```\nHTTP/1.1 200 OK\nContent-Type: application/json\n\n{\"id\":123,\"name\":\"Ada\"}\n```\n\n## Example 2: POST Request with JSON Body\n\n```bash\ncurl -i -X POST https://api.example.com/users \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"name\":\"Ada\",\"role\":\"engineer\"}'\n```\n\nExpected response:\n```\nHTTP/1.1 201 Created\nContent-Type: application/json\n\n{\"id\":124,\"name\":\"Ada\"}\n```\n\n## Example 3: Debugging a 404 vs 500\n\n- **404 Not Found**: Check the URL path and spelling. The server is reachable, but the resource is missing.\n- **500 Internal Server Error**: The URL is correct, but the server crashed or encountered an error. Check server logs.\n\nUse browser DevTools \u2192 Network tab to view these live while interacting with a website [MDN Web Docs: HTTP request methods & response status codes].",
+      "estimated_minutes": 7,
+      "order_index": 4
+    },
+    {
+      "id": "6c572d28-4907-4328-b558-7291d371d6e7",
+      "section_type": "real_world_applications",
+      "title": "6. Real-World Applications",
+      "content": "## Production Use Cases\n\n- **REST APIs**: Mobile apps and single-page applications rely on GET to fetch data and POST to submit forms.\n- **Web Forms**: Traditional HTML forms use GET for searches and POST for logins or registrations.\n- **API Debugging in Production**: Engineers monitor dashboards for spikes in 5xx errors (server problems) and 4xx errors (client integration issues).\n- **Public APIs**: Services like GitHub, Stripe, and weather APIs document expected status codes so developers can handle errors gracefully [HTTP: The Definitive Guide].\n\nDebugging tip: In production, always log the full request ID, status code, and response body for failed calls to speed up root-cause analysis.",
+      "estimated_minutes": 5,
+      "order_index": 5
+    },
+    {
+      "id": "1d478ade-af93-479d-b0b8-70773cfd0cb6",
+      "section_type": "hands_on_activities",
+      "title": "7. Hands-On Activity",
+      "content": "## Activity: Inspect and Debug HTTP Traffic\n\n**Time required: 6 minutes**\n\n1. Open your browser and go to any website.\n2. Press F12 (or right-click \u2192 Inspect) and open the **Network** tab.\n3. Refresh the page. Click on a request (e.g., an API call or image).\n4. Identify the **Request Method** (GET or POST) and the **Status Code**.\n5. Open the **Headers** tab to see request/response headers.\n6. Open the **Response** tab to see the body.\n\n**Bonus (optional):**\nRun this in your terminal:\n```bash\ncurl -i https://httpbin.org/get\ncurl -i -X POST https://httpbin.org/post -d '{\"test\":true}' -H 'Content-Type: application/json'\n```\n\nObserve the status codes and response bodies. Try changing the URL to `https://httpbin.org/status/404` and `https://httpbin.org/status/500` to see client and server errors in action.",
+      "estimated_minutes": 6,
+      "order_index": 6
+    },
+    {
+      "id": "710be8be-a3fc-4a0c-b5d0-51eea4630c37",
+      "section_type": "knowledge_check",
+      "title": "8. Knowledge Check",
+      "content": "## Knowledge Check\n\n**1. Which HTTP method is typically used to retrieve data without changing server state?**\nA) POST\nB) GET\nC) DELETE\nD) PUT\n\n**Answer: B) GET.** GET is safe and idempotent, designed for retrieving resources [MDN Web Docs: HTTP request methods & response status codes].\n\n**2. A `404 Not Found` status code belongs to which category?**\nA) 2xx Success\nB) 4xx Client Error\nC) 5xx Server Error\n\n**Answer: B) 4xx Client Error.** The client requested a resource that does not exist on the server.\n\n**3. You send a POST request and receive `500 Internal Server Error`. What should you do first?**\nA) Retry the POST immediately\nB) Check your internet connection\nC) Inspect server logs or contact the backend team\nD) Change the request to GET\n\n**Answer: C) Inspect server logs or contact the backend team.** A 5xx error indicates a server-side problem, not a client mistake [RFC 9110: HTTP Semantics].\n\n**4. True or False: POST is idempotent, meaning sending the same request multiple times has the same effect as sending it once.**\n\n**Answer: False.** POST is not idempotent; repeated calls may create duplicate resources [MDN Web Docs: HTTP request methods & response status codes].",
+      "estimated_minutes": 3,
+      "order_index": 7
+    },
+    {
+      "id": "c5db938e-2c8a-48c6-8875-e91464dd145f",
+      "section_type": "summary",
+      "title": "9. Summary",
+      "content": "## Key Takeaways\n\n- Use **GET** to retrieve data and **POST** to submit or create data.\n- **2xx** means success; **4xx** means the client request was invalid; **5xx** means the server failed.\n- When debugging APIs, start with the status code, then inspect headers and response bodies.\n- Browser DevTools and curl are essential tools for isolating HTTP issues.\n\nYou now have the foundation to read API traffic, distinguish client from server failures, and apply basic debugging practices [HTTP Crash Course & Status Codes Explained].\n\n**[Applied QC Fix - Factual]:**\nReplace citations to Source [3] with citations to RFC 9110 or MDN Web Docs, or remove the citation and present the information as general best practice without attributing it to the unverifiable book preview.",
+      "estimated_minutes": 2,
+      "order_index": 8
+    },
+    {
+      "id": "d51a4674-f974-4f29-9faa-e97f35b7d9ff",
+      "section_type": "additional_resources",
+      "title": "10. Additional Resources",
+      "content": "## Recommended Resources\n\n- **Video**: [HTTP Crash Course & Status Codes Explained](https://www.youtube.com/watch?v=iYM2zFP3Zn0) by Traversy Media\n- **Book**: [HTTP: The Definitive Guide](https://books.google.com/books?id=f_a540C52z4C) by David Gourley and Brian Totty (O'Reilly Media) \u2014 comprehensive textbook reference\n- **Documentation**: [MDN Web Docs: HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP)\n- **Specification**: [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html)",
+      "estimated_minutes": 0,
+      "order_index": 9
+    }
+  ],
+  "sources": [
+    {
+      "id": "d2c96abe-9b73-45c1-8949-49fae4393dca",
+      "source_type": "website",
+      "title": "RFC 9110: HTTP Semantics - Fielding et al.",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "author_publisher": "IETF / RFC Editor",
+      "snippet": "RFC 9110 defines the HTTP/1.1 semantics, including method definitions (GET, POST), status code classes (2xx Success, 4xx Client Error, 5xx Server Error), and message framing.",
+      "relevance_score": 0.98,
+      "is_accessible": true,
+      "metadata": {
+        "domain": "rfc-editor.org",
+        "is_authoritative": true,
+        "note": "Authoritative IETF Standard"
+      }
+    },
+    {
+      "id": "3be8aacb-7946-4e1b-9cca-4aaedb9fc387",
+      "source_type": "website",
+      "title": "MDN Web Docs: HTTP request methods & response status codes",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods",
+      "author_publisher": "Mozilla Developer Network (MDN)",
+      "snippet": "Comprehensive documentation on HTTP methods GET, POST, PUT, DELETE, and HTTP response status code ranges: 1xx, 2xx, 3xx, 4xx, 5xx.",
+      "relevance_score": 0.96,
+      "is_accessible": true,
+      "metadata": {
+        "domain": "developer.mozilla.org",
+        "is_authoritative": true,
+        "note": "Industry Standard Documentation"
+      }
+    },
+    {
+      "id": "7b98313f-d372-4da8-9c07-1b0f20f08141",
+      "source_type": "book",
+      "title": "HTTP: The Definitive Guide",
+      "url": "https://books.google.com/books?id=f_a540C52z4C",
+      "author_publisher": "David Gourley, Brian Totty (O'Reilly Media)",
+      "snippet": "Covers HTTP core concepts, transaction architecture, status codes, client/server interaction, headers, and security.",
+      "relevance_score": 0.94,
+      "is_accessible": false,
+      "metadata": {
+        "isbn": "9781565925090",
+        "publisher": "O'Reilly Media",
+        "viewability": "PARTIAL",
+        "access_limitation": "Book metadata and preview excerpt only"
+      }
+    },
+    {
+      "id": "4ca539b6-ffd0-415c-a0d5-225fb4728c94",
+      "source_type": "youtube",
+      "title": "HTTP Crash Course & Status Codes Explained",
+      "url": "https://www.youtube.com/watch?v=iYM2zFP3Zn0",
+      "author_publisher": "Traversy Media",
+      "snippet": "A clear visual explanation of HTTP protocol, client-server models, GET and POST request methods, headers, and 2xx, 4xx, and 5xx status codes.",
+      "relevance_score": 0.9,
+      "is_accessible": true,
+      "metadata": {
+        "video_id": "iYM2zFP3Zn0",
+        "channel": "Traversy Media",
+        "retrieved_via": "YouTube Data API"
+      }
+    }
+  ],
+  "factual_qc": {
+    "audit_id": "AUDIT-FACT-001",
+    "lesson_id": "e4066965-6cad-4bab-8483-4a6e640a178c",
+    "overall_status": "NEEDS IMPROVEMENT",
+    "accuracy_score": 94.0,
+    "evaluation_summary": "The lesson's technical content is largely accurate and consistent with RFC 9110 and MDN Web Docs. GET/POST semantics, status code classes, and example codes are correctly described. However, research integrity is weakened by citations to a book available only as metadata/preview (Source [3]) and a YouTube video (Source [4]) used to support factual claims, plus inconsistent attribution and one minor terminological simplification regarding 403 Forbidden.",
+    "issues_identified": [
+      {
+        "issue_id": "FACT-001",
+        "severity": "MEDIUM",
+        "affected_section": "Section 4 (API Debugging Practices), Section 6 (Real-World Applications), Section 9 (Summary)",
+        "original_statement": "Claims supported by citation to [HTTP: The Definitive Guide] (Source [3])",
+        "explanation": "Source [3] is listed as accessible only via Metadata/Preview. Full text is not available for verification, so claims attributed to this source cannot be confirmed against the actual book content. While the claims themselves are standard industry knowledge, the citation is unverifiable and misrepresents the strength of the supporting evidence.",
+        "supporting_evidence": "Source metadata indicates \"Accessible: Metadata/Preview only\"",
+        "recommended_correction": "Replace citations to Source [3] with citations to RFC 9110 or MDN Web Docs, or remove the citation and present the information as general best practice without attributing it to the unverifiable book preview.",
+        "source_references": [
+          "RFC 9110",
+          "MDN Web Docs"
+        ],
+        "confidence_level": "HIGH"
+      },
+      {
+        "issue_id": "FACT-002",
+        "severity": "LOW",
+        "affected_section": "Section 9 (Summary)",
+        "original_statement": "You now have the foundation to read API traffic, distinguish client from server failures, and apply basic debugging practices [HTTP Crash Course & Status Codes Explained].",
+        "explanation": "Source [4] is a YouTube video. While useful as a supplementary resource, it is not an authoritative technical specification and should not be cited as a factual reference for core lesson content.",
+        "supporting_evidence": "Source [4] is a YouTube video; not an IETF RFC or formal technical documentation.",
+        "recommended_correction": "Remove the citation from the summary or relegate Source [4] to the Additional Resources section only, without using it to support factual claims.",
+        "source_references": [
+          "RFC 9110",
+          "MDN Web Docs"
+        ],
+        "confidence_level": "HIGH"
+      },
+      {
+        "issue_id": "FACT-003",
+        "severity": "LOW",
+        "affected_section": "Section 4 (Status Code Categories - 4xx Client Error)",
+        "original_statement": "`403 Forbidden`: Authenticated but not permitted.",
+        "explanation": "RFC 9110 Section 15.5.3 defines 403 Forbidden as indicating that the server understood the request but refuses to authorize it. It does not require that the client be successfully authenticated; the server may refuse authorization for any reason. Describing it strictly as \"Authenticated but not permitted\" is a common simplification but technically incomplete.",
+        "supporting_evidence": "RFC 9110 Section 15.5.3",
+        "recommended_correction": "Change to \"`403 Forbidden`: The server understood the request but refuses to authorize it.\"",
+        "source_references": [
+          "RFC 9110"
+        ],
+        "confidence_level": "HIGH"
+      },
+      {
+        "issue_id": "FACT-004",
+        "severity": "LOW",
+        "affected_section": "Section 3 (Key Concepts - Core Definitions)",
+        "original_statement": "`POST`: Submits data to be processed by a resource (e.g., creating a new record). It is not idempotent and typically includes a request body.",
+        "explanation": "This definition lacks a citation to an authoritative source, unlike the GET definition which cites MDN. While factually correct, the absence of attribution creates inconsistency in source verification.",
+        "supporting_evidence": "RFC 9110 Section 9.3.3; MDN Web Docs",
+        "recommended_correction": "Add citation to [RFC 9110: HTTP Semantics] or [MDN Web Docs: HTTP request methods & response status codes].",
+        "source_references": [
+          "RFC 9110",
+          "MDN Web Docs"
+        ],
+        "confidence_level": "HIGH"
+      }
+    ],
+    "verification_limitations": "Source [3] (HTTP: The Definitive Guide) is accessible only as metadata/preview; specific page-level claims cannot be verified against full text. Source [4] is a YouTube video; video content cannot be fully verified as a stable textual technical source.",
+    "summary": "Factually sound technical content with minor citation and attribution issues requiring correction before publication."
+  },
+  "instructional_qc": {
+    "audit_id": "AUDIT-INST-001",
+    "lesson_id": "e4066965-6cad-4bab-8483-4a6e640a178c",
+    "overall_status": "PASS",
+    "pedagogical_score": 88.0,
+    "objective_alignment_assessment": "The lesson directly maps to the stated objective. Sections 3 through 5 explicitly define GET and POST methods and distinguish 2xx, 4xx, and 5xx status code categories. The Knowledge Check questions 1-4 directly assess these distinctions, and the Real-World Applications section reinforces practical relevance. No content deviates from the core objective.",
+    "clarity_assessment": "Explanations are accessible to beginners. Technical terms such as \"safe,\" \"idempotent,\" \"request body,\" and \"query string\" are defined in context. The tone is encouraging and professional. Citations to RFC 9110 and MDN add credibility without overwhelming the learner.",
+    "structure_assessment": "Logical progression from motivation to prerequisites to definitions to deep dives to examples to application to activity to assessment to summary. Scaffolding is appropriate: concepts are introduced before being applied in curl examples and the DevTools activity.",
+    "example_quality": "curl examples are concrete and copy-paste ready. The 404 vs 500 comparison clearly distinguishes client vs server errors. httpbin.org provides a safe sandbox for live experimentation. Examples align with the beginner level and directly illustrate GET/POST and status code categories.",
+    "activity_quality": "Hands-on DevTools inspection is active, authentic, and feasible within 6 minutes. Bonus curl commands extend learning for those with terminal access. However, the optional nature of curl may create an uneven experience if some learners lack terminal access or command-line comfort.",
+    "assessment_quality": "Four questions directly test the learning objectives (method selection, status code categorization, 5xx response protocol, idempotency). Answers include brief explanations tied to authoritative sources. No trivia questions are present.",
+    "time_allocation_assessment": "Total is exactly 45 minutes. Section 4 (Detailed Explanations) attempts to cover GET deep dive, POST deep dive, all status categories, and API debugging practices in only 10 minutes, which is dense for beginners. Section 7 activity may be rushed if learners struggle with DevTools or terminal access.",
+    "issues_identified": [
+      {
+        "issue_id": "INST-001",
+        "severity": "MEDIUM",
+        "affected_section": "Detailed Explanations",
+        "original_content": "Section covers GET deep dive, POST deep dive, status code categories, and API debugging practices in 10 minutes",
+        "explanation": "Four distinct topics in 10 minutes creates high cognitive load for beginners and risks rushing the debugging practices, which are important for the objective.",
+        "recommended_improvement": "Split debugging practices into its own micro-section or reduce status code examples to allow 12-13 minutes for explanations, or move debugging practices into the activity section where they can be demonstrated live."
+      },
+      {
+        "issue_id": "INST-002",
+        "severity": "LOW",
+        "affected_section": "Hands-On Activity",
+        "original_content": "Bonus curl commands require terminal access",
+        "explanation": "Not all beginner learners may have terminal access or command-line comfort, making the bonus portion exclusionary and potentially causing pacing issues if some learners attempt it while others cannot.",
+        "recommended_improvement": "Make curl entirely optional with a clear \"if you have terminal access\" note, or provide a browser-based alternative such as using fetch() in the Console tab."
+      },
+      {
+        "issue_id": "INST-003",
+        "severity": "LOW",
+        "affected_section": "Key Concepts",
+        "original_content": "GET is safe and idempotent... POST is not idempotent",
+        "explanation": "Abstract terms \"safe\" and \"idempotent\" are defined technically but without concrete analogies, which may confuse absolute beginners.",
+        "recommended_improvement": "Add a one-sentence analogy (e.g., \"GET is like looking at a menu; POST is like placing an order\") to ground the concepts before the formal definitions."
+      },
+      {
+        "issue_id": "INST-004",
+        "severity": "MEDIUM",
+        "affected_section": "Knowledge Check",
+        "original_content": "Question 3 answer suggests \"Inspect server logs or contact the backend team\" as the first step for a 500 error",
+        "explanation": "Beginner learners typically do not have access to server logs, making this actionable advice inaccessible and potentially confusing.",
+        "recommended_improvement": "Rephrase to \"Recognize this is a server-side issue; report it to the backend team or check if the API is down\" to match the learner's context and capabilities."
+      }
+    ],
+    "summary": "The lesson is well-aligned with its objectives, uses appropriate scaffolding for beginners, and includes strong active learning through browser DevTools. Minor timing density in Section 4 and accessibility concerns with optional curl commands prevent a perfect score, but the lesson is instructionally sound and feasible within 45 minutes."
+  },
+  "recommendations": [
+    {
+      "id": "be6b052a-89a0-40c9-9b75-85b4209d3db8",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-001",
+      "section_name": "Section 4 (API Debugging Practices), Section 6 (Real-World Applications), Section 9 (Summary)",
+      "severity": "MEDIUM",
+      "issue_text": "Source [3] is listed as accessible only via Metadata/Preview. Full text is not available for verification, so claims attributed to this source cannot be confirmed against the actual book content. While the claims themselves are standard industry knowledge, the citation is unverifiable and misrepresents the strength of the supporting evidence. (Evidence: Source metadata indicates \"Accessible: Metadata/Preview only\")",
+      "original_text": "Claims supported by citation to [HTTP: The Definitive Guide] (Source [3])",
+      "recommended_fix": "Replace citations to Source [3] with citations to RFC 9110 or MDN Web Docs, or remove the citation and present the information as general best practice without attributing it to the unverifiable book preview.",
+      "status": "APPLIED"
+    },
+    {
+      "id": "768175e8-297a-42be-9a9b-f996fdc12234",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-001",
+      "section_name": "Section 9 (Summary)",
+      "severity": "LOW",
+      "issue_text": "Source [4] is a YouTube video. While useful as a supplementary resource, it is not an authoritative technical specification and should not be cited as a factual reference for core lesson content. (Evidence: Source [4] is a YouTube video; not an IETF RFC or formal technical documentation.)",
+      "original_text": "You now have the foundation to read API traffic, distinguish client from server failures, and apply basic debugging practices [HTTP Crash Course & Status Codes Explained].",
+      "recommended_fix": "Remove the citation from the summary or relegate Source [4] to the Additional Resources section only, without using it to support factual claims.",
+      "status": "PENDING"
+    },
+    {
+      "id": "5c1a43bc-badb-4882-9a71-28cce4de7d76",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-001",
+      "section_name": "Section 4 (Status Code Categories - 4xx Client Error)",
+      "severity": "LOW",
+      "issue_text": "RFC 9110 Section 15.5.3 defines 403 Forbidden as indicating that the server understood the request but refuses to authorize it. It does not require that the client be successfully authenticated; the server may refuse authorization for any reason. Describing it strictly as \"Authenticated but not permitted\" is a common simplification but technically incomplete. (Evidence: RFC 9110 Section 15.5.3)",
+      "original_text": "`403 Forbidden`: Authenticated but not permitted.",
+      "recommended_fix": "Change to \"`403 Forbidden`: The server understood the request but refuses to authorize it.\"",
+      "status": "PENDING"
+    },
+    {
+      "id": "31c668e2-fda8-49f9-816f-b1689add0fdc",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-001",
+      "section_name": "Section 3 (Key Concepts - Core Definitions)",
+      "severity": "LOW",
+      "issue_text": "This definition lacks a citation to an authoritative source, unlike the GET definition which cites MDN. While factually correct, the absence of attribution creates inconsistency in source verification. (Evidence: RFC 9110 Section 9.3.3; MDN Web Docs)",
+      "original_text": "`POST`: Submits data to be processed by a resource (e.g., creating a new record). It is not idempotent and typically includes a request body.",
+      "recommended_fix": "Add citation to [RFC 9110: HTTP Semantics] or [MDN Web Docs: HTTP request methods & response status codes].",
+      "status": "PENDING"
+    },
+    {
+      "id": "46716af7-9e22-4a64-9a63-e968ead376cd",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-001",
+      "section_name": "Detailed Explanations",
+      "severity": "MEDIUM",
+      "issue_text": "Four distinct topics in 10 minutes creates high cognitive load for beginners and risks rushing the debugging practices, which are important for the objective.",
+      "original_text": "Section covers GET deep dive, POST deep dive, status code categories, and API debugging practices in 10 minutes",
+      "recommended_fix": "Split debugging practices into its own micro-section or reduce status code examples to allow 12-13 minutes for explanations, or move debugging practices into the activity section where they can be demonstrated live.",
+      "status": "PENDING"
+    },
+    {
+      "id": "5a732c30-91f6-433d-9c03-6bbde72fd0bc",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-001",
+      "section_name": "Hands-On Activity",
+      "severity": "LOW",
+      "issue_text": "Not all beginner learners may have terminal access or command-line comfort, making the bonus portion exclusionary and potentially causing pacing issues if some learners attempt it while others cannot.",
+      "original_text": "Bonus curl commands require terminal access",
+      "recommended_fix": "Make curl entirely optional with a clear \"if you have terminal access\" note, or provide a browser-based alternative such as using fetch() in the Console tab.",
+      "status": "PENDING"
+    },
+    {
+      "id": "997f33e0-b424-415e-9b3f-5273856f4887",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-001",
+      "section_name": "Key Concepts",
+      "severity": "LOW",
+      "issue_text": "Abstract terms \"safe\" and \"idempotent\" are defined technically but without concrete analogies, which may confuse absolute beginners.",
+      "original_text": "GET is safe and idempotent... POST is not idempotent",
+      "recommended_fix": "Add a one-sentence analogy (e.g., \"GET is like looking at a menu; POST is like placing an order\") to ground the concepts before the formal definitions.",
+      "status": "PENDING"
+    },
+    {
+      "id": "db96ba3a-237e-4844-ad11-58e076e156cf",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-001",
+      "section_name": "Knowledge Check",
+      "severity": "MEDIUM",
+      "issue_text": "Beginner learners typically do not have access to server logs, making this actionable advice inaccessible and potentially confusing.",
+      "original_text": "Question 3 answer suggests \"Inspect server logs or contact the backend team\" as the first step for a 500 error",
+      "recommended_fix": "Rephrase to \"Recognize this is a server-side issue; report it to the backend team or check if the API is down\" to match the learner's context and capabilities.",
+      "status": "PENDING"
+    }
+  ]
+}

@@ -1,0 +1,235 @@
+{
+  "id": "04dbb9ff-51b5-4ae7-9136-bb54aae8b477",
+  "title": "Introduction to Machine Learning and Supervised Learning",
+  "learning_objective": "Understand the fundamentals of machine learning, distinguish between supervised and unsupervised learning, and explain classification and regression using practical examples.",
+  "target_level": "Introductory Data Science Students",
+  "difficulty": "Intermediate",
+  "instructor_instructions": "Include Scikit-Learn code snippets for both regression and classification.",
+  "estimated_duration_minutes": 45,
+  "status": "COMPLETED",
+  "created_at": "2026-11-06 17:50:50.230733",
+  "updated_at": "2026-11-06 17:50:50.316635",
+  "sections": [
+    {
+      "id": "9949c921-5553-4d1f-b2a0-4815b7302590",
+      "section_type": "introduction",
+      "title": "1. Introduction to Machine Learning",
+      "content": "Machine Learning (ML) is a subfield of artificial intelligence that gives computers the ability to learn patterns from historical data without being explicitly programmed with deterministic rules. Instead of hardcoding conditional logic, an algorithm optimizes its parameters by minimizing prediction error on training examples.",
+      "estimated_minutes": 3,
+      "order_index": 0
+    },
+    {
+      "id": "bd29aca7-796f-4d56-ab41-5a23fcc1d046",
+      "section_type": "prerequisites",
+      "title": "2. Prerequisite Knowledge",
+      "content": "- Basic Python programming (variables, functions, lists).\n- Foundational mathematical ideas: Cartesian coordinate planes, linear equations (y = mx + b).\n- High-level concept of tabular datasets (rows as samples, columns as features).",
+      "estimated_minutes": 3,
+      "order_index": 1
+    },
+    {
+      "id": "6d0e36bc-b28e-4adb-8284-9eee69640442",
+      "section_type": "key_concepts",
+      "title": "3. Key Terminology & Concepts",
+      "content": "- **Features (X)**: Measurable properties or attributes of observed data.\n- **Labels/Targets (y)**: The ground-truth answer or quantity the model learns to predict.\n- **Supervised Learning**: Training an algorithm using labeled pairs `(X, y)` so it learns a mapping function `f(X) -> y`.\n- **Unsupervised Learning**: Discovering hidden structures, clusters, or patterns in unlabeled data `(X)` without predefined target labels.\n\n**[Applied QC Fix - Factual]:**\nSupervised Learning: Training an algorithm on labeled pairs (X, y) to infer an approximating function f(X) \u2248 y that generalizes accurately to unseen data.",
+      "estimated_minutes": 6,
+      "order_index": 2
+    },
+    {
+      "id": "dce44c4d-54f6-4d7c-bd0f-246d1d2262cb",
+      "section_type": "detailed_explanations",
+      "title": "4. Supervised vs Unsupervised: Classification and Regression",
+      "content": "### 4.1 Supervised vs. Unsupervised Learning\n\nIn **Supervised Learning**, every training example has a known target label (e.g. house features paired with its actual sale price). The model computes loss between its prediction and true label, adjusting weights via optimization.\nIn **Unsupervised Learning**, no target labels exist. The algorithm identifies inherent geometric groupings (e.g., K-Means clustering customer segments) or reduces dimensionality (PCA).\n\n### 4.2 The Two Primary Supervised Tasks\n\n1. **Classification (Discrete Targets)**:\n   Predicts a categorical class label.\n   - Binary Classification: Spam vs. Not Spam, Fraudulent vs. Legitimate.\n   - Multiclass Classification: Classifying handwritten digits (0 through 9) or animal species.\n\n2. **Regression (Continuous Targets)**:\n   Predicts a numerical, quantitative value on a continuous continuum.\n   - Predicting house prices based on square footage.\n   - Estimating patient recovery days or daily store revenue.",
+      "estimated_minutes": 10,
+      "order_index": 3
+    },
+    {
+      "id": "8a3aa094-07af-41ec-aa8c-86453fd7f1ac",
+      "section_type": "practical_examples",
+      "title": "5. Practical Code Examples (Scikit-Learn)",
+      "content": "#### Classification vs. Regression in Scikit-Learn\n\n```python\nfrom sklearn.linear_model import LogisticRegression, LinearRegression\nimport numpy as np\n\n# Features: [Square Footage, Bedrooms]\nX = np.array([[800, 1], [1500, 3], [2400, 4]])\n\n# 1. Regression: Predicting continuous price ($ thousands)\ny_price = np.array([210.0, 450.0, 720.0])\nreg_model = LinearRegression().fit(X, y_price)\nprint('Predicted Price:', reg_model.predict([[1200, 2]]))\n\n# 2. Classification: Predicting discrete luxury tier (0=Standard, 1=Luxury)\ny_tier = np.array([0, 0, 1])\nclf_model = LogisticRegression().fit(X, y_tier)\nprint('Predicted Tier:', clf_model.predict([[1200, 2]]))\n```",
+      "estimated_minutes": 7,
+      "order_index": 4
+    },
+    {
+      "id": "65649181-da11-4762-afa0-9f88509b35d7",
+      "section_type": "real_world_applications",
+      "title": "6. Real-World Applications",
+      "content": "- **Healthcare**: Predicting patient readmission probabilities (Classification) vs. estimating optimal medication dosages (Regression).\n- **Finance**: Credit card transaction fraud detection (Classification) vs. stock index volatility forecasting (Regression).\n- **E-Commerce**: Customer churn risk scoring (Classification) vs. lifetime value estimation (Regression).",
+      "estimated_minutes": 5,
+      "order_index": 5
+    },
+    {
+      "id": "8ca2c426-0d7e-4191-8a43-bb655fe975a0",
+      "section_type": "hands_on_activities",
+      "title": "7. Hands-on Activity: Problem Classification Exercise",
+      "content": "**Objective**: Categorize machine learning problem statements.\nClassify each problem as: Supervised Classification, Supervised Regression, or Unsupervised Learning:\n1. Recommending music playlists by grouping songs with similar audio waveforms without labels.\n2. Predicting tomorrow's exact temperature in Celsius from atmospheric sensor readings.\n3. Detecting whether a medical X-ray shows pneumonia (Yes/No).\n\n*Solutions*: 1=Unsupervised Clustering, 2=Supervised Regression, 3=Supervised Classification.",
+      "estimated_minutes": 6,
+      "order_index": 6
+    },
+    {
+      "id": "1f0b97cb-12ee-4d44-a783-dd243d4f82e6",
+      "section_type": "knowledge_check",
+      "title": "8. Knowledge Check Questions",
+      "content": "1. **Question**: What is the key discriminator between supervised and unsupervised learning?\n   - **Answer**: Supervised learning trains on labeled data pairs `(X, y)`, whereas unsupervised learning discovers patterns in unlabeled data `(X)` without ground-truth targets.\n\n2. **Question**: Is predicting a student's final test score (from 0 to 100 points) classification or regression?\n   - **Answer**: Regression, because the target variable is a continuous quantitative value.\n\n3. **Question**: Why can't Linear Regression be used directly for multi-class classification?\n   - **Answer**: Linear regression predicts unbounded continuous numbers rather than calibrated class probability distributions.",
+      "estimated_minutes": 3,
+      "order_index": 7
+    },
+    {
+      "id": "f073dc10-b07c-4abc-88ad-1c40d545b39d",
+      "section_type": "summary",
+      "title": "9. Lesson Summary",
+      "content": "- Machine Learning extracts predictive relationships directly from observed data.\n- Supervised learning requires labeled training targets; unsupervised learning finds unlabeled patterns.\n- Supervised tasks split into Classification (discrete categories) and Regression (continuous numeric values).",
+      "estimated_minutes": 2,
+      "order_index": 8
+    },
+    {
+      "id": "439cedf5-c1f9-4a53-8a00-b0cb7be8c0a4",
+      "section_type": "additional_resources",
+      "title": "10. Recommended Learning Resources",
+      "content": "- **Video**: StatQuest with Josh Starmer - *Machine Learning Fundamentals: Supervised Learning* (https://www.youtube.com/watch?v=Gv9_4yMHFhI)\n- **Textbook**: Christopher M. Bishop - *Pattern Recognition and Machine Learning*, Springer (ISBN: 9780387310732)\n- **Interactive Tutorial**: Google Machine Learning Crash Course (https://developers.google.com/machine-learning/crash-course)",
+      "estimated_minutes": 0,
+      "order_index": 9
+    },
+    {
+      "id": "5e9d3048-c1aa-4197-becf-ee6efafd8685",
+      "section_type": "references",
+      "title": "11. Traceable References",
+      "content": "1. Bishop, C. M. (2006). *Pattern Recognition and Machine Learning*. Springer-Verlag.\n2. Pedregosa, F., et al. (2011). *Scikit-learn: Machine Learning in Python*. Journal of Machine Learning Research, 12, 2825-2830.\n3. Google Developers. *Machine Learning Crash Course*. URL: https://developers.google.com/machine-learning/crash-course",
+      "estimated_minutes": 0,
+      "order_index": 10
+    }
+  ],
+  "sources": [
+    {
+      "id": "0f095499-9f04-47dd-9607-9989cde1818f",
+      "source_type": "website",
+      "title": "Scikit-Learn Documentation: Supervised Learning & Model Selection",
+      "url": "https://scikit-learn.org/stable/supervised_learning.html",
+      "author_publisher": "Scikit-Learn Development Team",
+      "snippet": "Official tutorial on supervised learning paradigms: distinguishing classification (predicting discrete class labels) from regression (predicting continuous numerical quantities).",
+      "relevance_score": 0.99,
+      "is_accessible": true,
+      "metadata": {
+        "domain": "scikit-learn.org",
+        "is_authoritative": true
+      }
+    },
+    {
+      "id": "6c55ec19-a4b3-4349-a751-fc09bddda1e5",
+      "source_type": "website",
+      "title": "Google Machine Learning Crash Course: Supervised vs Unsupervised",
+      "url": "https://developers.google.com/machine-learning/crash-course",
+      "author_publisher": "Google Developers",
+      "snippet": "Foundational guide explaining machine learning fundamentals, feature engineering, labeled datasets in supervised learning versus unlabeled clustering in unsupervised learning.",
+      "relevance_score": 0.97,
+      "is_accessible": true,
+      "metadata": {
+        "domain": "developers.google.com",
+        "is_authoritative": true
+      }
+    },
+    {
+      "id": "41a43df3-9ccc-4873-9a0f-08b44d810eb8",
+      "source_type": "book",
+      "title": "Pattern Recognition and Machine Learning",
+      "url": "https://books.google.com/books?id=kDY6DwAAQBAJ",
+      "author_publisher": "Christopher M. Bishop (Springer)",
+      "snippet": "Standard academic textbook on machine learning foundations, probability distributions, linear models for regression, and linear models for classification.",
+      "relevance_score": 0.95,
+      "is_accessible": false,
+      "metadata": {
+        "isbn": "9780387310732",
+        "publisher": "Springer",
+        "viewability": "PARTIAL",
+        "access_limitation": "Book metadata and preview excerpt only"
+      }
+    },
+    {
+      "id": "84af2935-3f47-4005-a2ce-42fdba689618",
+      "source_type": "youtube",
+      "title": "StatQuest: Machine Learning Fundamentals - Supervised Learning",
+      "url": "https://www.youtube.com/watch?v=Gv9_4yMHFhI",
+      "author_publisher": "StatQuest with Josh Starmer",
+      "snippet": "Visual, step-by-step intuition explaining the core difference between supervised and unsupervised learning, regression lines, and classification decision boundaries.",
+      "relevance_score": 0.91,
+      "is_accessible": true,
+      "metadata": {
+        "video_id": "Gv9_4yMHFhI",
+        "channel": "StatQuest with Josh Starmer"
+      }
+    }
+  ],
+  "factual_qc": {
+    "audit_id": "AUDIT-FACT-2CAE9815",
+    "lesson_id": "04dbb9ff-51b5-4ae7-9136-bb54aae8b477",
+    "overall_status": "PASS",
+    "accuracy_score": 94.5,
+    "evaluation_summary": "Factual definitions of Supervised vs Unsupervised learning and Classification vs Regression accurately reflect standard machine learning literature (Bishop 2006, Scikit-Learn documentation).",
+    "issues_identified": [
+      {
+        "issue_id": "FACT-B4EAAB",
+        "severity": "LOW",
+        "affected_section": "3. Key Terminology & Concepts",
+        "original_statement": "Supervised Learning: Training an algorithm using labeled pairs (X, y) so it learns a mapping function f(X) -> y.",
+        "explanation": "Clarifying that the model learns an approximation of the true unknown data distribution rather than an exact deterministic function enhances statistical rigor.",
+        "supporting_evidence": "Bishop, C. M. (2006). Pattern Recognition and Machine Learning, Chapter 1.",
+        "recommended_correction": "Supervised Learning: Training an algorithm on labeled pairs (X, y) to infer an approximating function f(X) \u2248 y that generalizes accurately to unseen data.",
+        "source_references": [
+          "Pattern Recognition and Machine Learning",
+          "Scikit-Learn Docs"
+        ],
+        "confidence_level": "HIGH"
+      }
+    ],
+    "verification_limitations": "Springer textbook reference was evaluated based on chapter abstracts and standard curriculum benchmarks.",
+    "summary": "Factual QC Audit PASSED. Mathematical and algorithmic definitions are sound and well-grounded."
+  },
+  "instructional_qc": {
+    "audit_id": "AUDIT-INST-8C188139",
+    "lesson_id": "04dbb9ff-51b5-4ae7-9136-bb54aae8b477",
+    "overall_status": "PASS",
+    "pedagogical_score": 93.0,
+    "objective_alignment_assessment": "Completely aligns with objectives: clearly differentiates supervised from unsupervised learning, and contrasts classification with regression using relatable examples.",
+    "clarity_assessment": "Definitions of features (X) and labels (y) are succinct. Avoids overwhelming novice learners with matrix calculus while preserving technical precision.",
+    "structure_assessment": "Pedagogical scaffolding starts with conceptual intuition, transitions into side-by-side Scikit-Learn code, and reinforces learning through interactive categorization.",
+    "example_quality": "Housing price prediction (Regression) vs luxury tier classification (Classification) uses the exact same feature vector, creating an intuitive mental model of the difference.",
+    "activity_quality": "Active problem-classification exercise engages critical thinking by presenting ambiguous real-world scenarios.",
+    "assessment_quality": "Questions directly target common misconceptions (e.g., using linear regression on multi-class targets).",
+    "time_allocation_assessment": "Total duration is 45 minutes, comfortably within the 45-minute constraint.",
+    "issues_identified": [
+      {
+        "issue_id": "INST-686CF2",
+        "severity": "LOW",
+        "affected_section": "7. Hands-on Activity: Problem Classification Exercise",
+        "original_content": "Solutions: 1=Unsupervised Clustering, 2=Supervised Regression, 3=Supervised Classification.",
+        "explanation": "Displaying solutions immediately adjacent to the problem prompts risks passive reading rather than active recall.",
+        "recommended_improvement": "Include a collapsible 'Self-Check Reveal' or guided reflection prompt so students attempt categorization before reading solutions."
+      }
+    ],
+    "summary": "Instructional Quality QC Audit PASSED. Strong pedagogical design with effective conceptual contrast."
+  },
+  "recommendations": [
+    {
+      "id": "735d6960-f676-43dd-9bb5-21fc1019b38f",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-2CAE9815",
+      "section_name": "3. Key Terminology & Concepts",
+      "severity": "LOW",
+      "issue_text": "Clarifying that the model learns an approximation of the true unknown data distribution rather than an exact deterministic function enhances statistical rigor. (Evidence: Bishop, C. M. (2006). Pattern Recognition and Machine Learning, Chapter 1.)",
+      "original_text": "Supervised Learning: Training an algorithm using labeled pairs (X, y) so it learns a mapping function f(X) -> y.",
+      "recommended_fix": "Supervised Learning: Training an algorithm on labeled pairs (X, y) to infer an approximating function f(X) \u2248 y that generalizes accurately to unseen data.",
+      "status": "APPLIED"
+    },
+    {
+      "id": "fc5eb9ea-ddaf-4999-a7bc-3b4c62561e55",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-8C188139",
+      "section_name": "7. Hands-on Activity: Problem Classification Exercise",
+      "severity": "LOW",
+      "issue_text": "Displaying solutions immediately adjacent to the problem prompts risks passive reading rather than active recall.",
+      "original_text": "Solutions: 1=Unsupervised Clustering, 2=Supervised Regression, 3=Supervised Classification.",
+      "recommended_fix": "Include a collapsible 'Self-Check Reveal' or guided reflection prompt so students attempt categorization before reading solutions.",
+      "status": "PENDING"
+    }
+  ]
+}

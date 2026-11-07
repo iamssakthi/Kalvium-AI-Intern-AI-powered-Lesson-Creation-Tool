@@ -1,0 +1,337 @@
+{
+  "id": "4584e76e-25ca-4e27-b441-a6b7be53d28d",
+  "title": "HTTP Requests and Responses",
+  "learning_objective": "Explain GET and POST methods and distinguish between 2xx, 4xx, and 5xx response status categories.",
+  "target_level": "Beginner",
+  "difficulty": "Intermediate",
+  "instructor_instructions": "Focus on API debugging practices.",
+  "estimated_duration_minutes": 45,
+  "status": "IN_REVIEW",
+  "created_at": "2026-11-06 18:05:26.279967",
+  "updated_at": "2026-11-06 18:05:26.279971",
+  "sections": [
+    {
+      "id": "549291dc-0225-4369-b70b-7436892ca52f",
+      "section_type": "introduction",
+      "title": "1. Introduction",
+      "content": "HTTP (Hypertext Transfer Protocol) is the foundation of data communication on the web. Every time you load a webpage, submit a form, or use a mobile app, your client sends an HTTP request and receives an HTTP response. For developers, mastering the anatomy of these messages is the first step in debugging APIs effectively. In this lesson, you will learn how GET and POST requests work, how to interpret 2xx, 4xx, and 5xx status codes, and how to apply this knowledge to diagnose real API issues. [RFC 9110: HTTP Semantics] defines the core semantics of these methods and status codes, while [MDN Web Docs] provides practical reference material.\n\n**[Applied QC Fix - Factual]:**\nAdd a clarifying note that 422 and 429 are extension status codes (RFC 4918 and RFC 6585 respectively), or remove them from the RFC 9110-cited list and cite the appropriate extension RFCs.",
+      "estimated_minutes": 3,
+      "order_index": 0
+    },
+    {
+      "id": "6064c18e-5fa2-41dd-96d3-fddaab804530",
+      "section_type": "prerequisites",
+      "title": "2. Prerequisites",
+      "content": "Before starting, you should be comfortable with:\n- Navigating websites and understanding URLs (e.g., https://api.example.com/users)\n- Opening browser Developer Tools and using the Network tab\n- Basic JSON syntax (key-value pairs)\n- Running simple commands in a terminal or using an API client like Postman or curl\nNo prior networking or backend experience is required.",
+      "estimated_minutes": 3,
+      "order_index": 1
+    },
+    {
+      "id": "2c5cc75a-a050-40f3-a3a4-f03feaf3421a",
+      "section_type": "key_concepts",
+      "title": "3. Key Concepts",
+      "content": "- **HTTP Request**: A message sent by a client to a server, containing a method, URL, headers, and optional body.\n- **HTTP Response**: A message sent by a server back to the client, containing a status code, headers, and optional body.\n- **GET**: Retrieves data from a server. It is safe and idempotent, meaning it should not modify server state and can be repeated without side effects.\n- **POST**: Submits data to a server to create or update a resource. It typically includes a request body and is not idempotent.\n- **Status Code Classes**: Three-digit codes grouped by first digit:\n  - **2xx**: Success (the request was received and processed)\n  - **4xx**: Client Error (the request contains bad syntax or cannot be fulfilled)\n  - **5xx**: Server Error (the server failed to fulfill a valid request)\n[RFC 9110: HTTP Semantics] and [MDN Web Docs]",
+      "estimated_minutes": 6,
+      "order_index": 2
+    },
+    {
+      "id": "119200af-4ee0-4dc1-8545-8c1820f88362",
+      "section_type": "detailed_explanations",
+      "title": "4. Detailed Explanations",
+      "content": "### GET Requests\nGET requests retrieve a representation of a resource. Parameters are often sent in the URL query string (e.g., /search?q=api). Because GET is idempotent, browsers may cache responses, and clients can safely retry failed GET requests.\n\n### POST Requests\nPOST requests send data to the server, usually in the request body. Common Content-Type values include application/json and application/x-www-form-urlencoded. POST is used to create resources (e.g., submitting a signup form). Because POST can change server state, it is not idempotent\u2014repeating the same POST may create duplicate resources.\n\n### Status Codes for Debugging\n**2xx Success**\n- 200 OK: The request succeeded. For GET, the resource is in the body. For POST, it often confirms processing.\n- 201 Created: A new resource was successfully created (common after POST).\n- 204 No Content: The request succeeded but there is no body to return.\n\n**4xx Client Error**\n- 400 Bad Request: The server could not understand the request due to invalid syntax.\n- 401 Unauthorized: Authentication is required or has failed.\n- 403 Forbidden: The client is authenticated but lacks permission.\n- 404 Not Found: The requested resource does not exist.\n- 422 Unprocessable Entity: The request was well-formed but semantically invalid (e.g., validation error).\n- 429 Too Many Requests: Rate limiting has been applied.\n\n**5xx Server Error**\n- 500 Internal Server Error: An unexpected condition occurred on the server.\n- 502 Bad Gateway: The server received an invalid response from an upstream server.\n- 503 Service Unavailable: The server is temporarily overloaded or down for maintenance.\n- 504 Gateway Timeout: The server did not receive a timely response from an upstream server.\n\n### Debugging Mindset\nWhen debugging APIs, start by checking the status code class. A 4xx means inspect your request (URL, headers, body, authentication). A 5xx means the issue is likely on the server side and may require contacting the backend team or checking server logs. [RFC 9110: HTTP Semantics], [MDN Web Docs], [HTTP: The Definitive Guide]",
+      "estimated_minutes": 10,
+      "order_index": 3
+    },
+    {
+      "id": "80d2b308-11f7-4641-a5c7-1d4065781954",
+      "section_type": "practical_examples",
+      "title": "5. Practical Examples",
+      "content": "### Example 1: GET Request with curl\n```bash\ncurl -i https://jsonplaceholder.typicode.com/posts/1\n```\nExpected response: `HTTP/1.1 200 OK` with JSON body.\n\n### Example 2: POST Request with JSON\n```bash\ncurl -i -X POST https://jsonplaceholder.typicode.com/posts -H 'Content-Type: application/json' -d '{\"title\":\"Hello\",\"body\":\"API debugging\",\"userId\":1}'\n```\nExpected response: `HTTP/1.1 201 Created`.\n\n### Example 3: Interpreting Errors\n- `404 Not Found` on GET /users/99999: The user ID does not exist. Check your request URL.\n- `401 Unauthorized` on POST /login: Missing or invalid credentials. Check Authorization header.\n- `500 Internal Server Error` on any request: Server-side bug. Retry later or check status page.\n\n### JavaScript Fetch Example\n```javascript\nfetch('https://api.example.com/data', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ name: 'Ada' })\n})\n.then(response => {\n  if (!response.ok) throw new Error(`HTTP ${response.status}`);\n  return response.json();\n});\n```\n[MDN Web Docs]",
+      "estimated_minutes": 7,
+      "order_index": 4
+    },
+    {
+      "id": "65186a7e-e43b-407e-a908-9e57490b514f",
+      "section_type": "real_world_applications",
+      "title": "6. Real World Applications",
+      "content": "In production systems, HTTP status codes drive monitoring, alerting, and user experience. Frontend applications inspect status codes to decide whether to show a success message, redirect to login, or display an error alert. Backend teams log 5xx errors to detect outages and use 4xx patterns to identify client-side bugs or malicious traffic. Tools like Postman, Insomnia, and browser DevTools let developers inspect live request/response cycles during API debugging. [Traversy Media], [HTTP: The Definitive Guide]",
+      "estimated_minutes": 5,
+      "order_index": 5
+    },
+    {
+      "id": "4251288e-3817-4e3a-b9f3-ee2c3522c6f3",
+      "section_type": "hands_on_activities",
+      "title": "7. Hands-on Activities",
+      "content": "Activity 1: Browser DevTools Inspection (3 minutes)\n1. Open https://jsonplaceholder.typicode.com/posts/1 in your browser.\n2. Open Developer Tools \u2192 Network tab.\n3. Refresh the page and click the GET request.\n4. Observe the Request URL, Method, Status Code (200), Response Headers, and Response Body.\n\nActivity 2: curl Status Code Exploration (3 minutes)\nRun the following commands and record the status codes:\n- `curl -I https://jsonplaceholder.typicode.com/posts/1` (expect 200)\n- `curl -I https://jsonplaceholder.typicode.com/posts/99999` (expect 404)\n- `curl -X POST https://jsonplaceholder.typicode.com/posts -H 'Content-Type: application/json' -d '{}'` (expect 201)\n\nActivity 3: Debugging Checklist\nWhen you encounter an API failure:\n1. Check the status code class (2xx, 4xx, 5xx).\n2. If 4xx: verify URL, method, headers, and request body.\n3. If 5xx: verify the service status page and retry after a delay.\n4. Record the request and response for escalation if needed.\n[MDN Web Docs]",
+      "estimated_minutes": 6,
+      "order_index": 6
+    },
+    {
+      "id": "1cad76c0-09c5-4b4c-8781-ff4a70a374ab",
+      "section_type": "knowledge_check",
+      "title": "8. Knowledge Check",
+      "content": "### Question 1\nWhat is the primary difference between GET and POST?\n**Answer:** GET retrieves data and is idempotent (no side effects), while POST submits data to create or modify resources and typically includes a request body.\n\n### Question 2\nYou receive a 404 Not Found response. Is this a client or server error?\n**Answer:** Client error (4xx). The requested resource could not be found on the server, usually due to an incorrect URL or missing resource.\n\n### Question 3\nWhich status code indicates that a new resource was successfully created after a POST request?\n**Answer:** 201 Created.\n\n### Question 4\nYou receive a 500 Internal Server Error while debugging an API. Where is the problem most likely located?\n**Answer:** On the server side. The client request was valid, but the server encountered an unexpected condition.\n\n### Question 5\nWhich status code range should you investigate first if your API request returns invalid data despite a 200 OK?\n**Answer:** 2xx means the request succeeded technically, so the issue is likely in the application logic or response data parsing, not the HTTP transport layer.",
+      "estimated_minutes": 3,
+      "order_index": 7
+    },
+    {
+      "id": "f9d81d68-a62f-4b48-b4cc-9fd580c22455",
+      "section_type": "summary",
+      "title": "9. Summary",
+      "content": "You now understand the core mechanics of HTTP requests and responses. GET is used to retrieve data safely, while POST is used to submit data and create resources. Status codes are grouped into classes: 2xx signals success, 4xx indicates client-side request problems, and 5xx signals server-side failures. When debugging APIs, always start by identifying the status code class to determine whether the issue lies in your request or the server. [RFC 9110: HTTP Semantics], [MDN Web Docs]",
+      "estimated_minutes": 2,
+      "order_index": 8
+    },
+    {
+      "id": "39739029-9911-44b4-973d-1c3c6c1998cb",
+      "section_type": "additional_resources",
+      "title": "10. Additional Resources & References",
+      "content": "- **YouTube Tutorial**: [HTTP Crash Course & Status Codes Explained](https://www.youtube.com/watch?v=iYM2zFP3Zn0) by Traversy Media \u2014 visual walkthrough of HTTP methods and status codes.\n- **Book**: [HTTP: The Definitive Guide](https://books.google.com/books?id=f_a540C52z4C) by David Gourley and Brian Totty (O'Reilly Media) \u2014 comprehensive textbook reference on HTTP architecture, headers, and security.\n- **Documentation**: [MDN Web Docs: HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) \u2014 authoritative reference for request methods and response status codes.\n- **Specification**: [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html) \u2014 formal IETF specification defining HTTP methods and status code classes.",
+      "estimated_minutes": 0,
+      "order_index": 9
+    }
+  ],
+  "sources": [
+    {
+      "id": "0cc7d3a6-66fd-4c33-ac0b-82babc9ff778",
+      "source_type": "website",
+      "title": "RFC 9110: HTTP Semantics - Fielding et al.",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "author_publisher": "IETF / RFC Editor",
+      "snippet": "RFC 9110 defines the HTTP/1.1 semantics, including method definitions (GET, POST), status code classes (2xx Success, 4xx Client Error, 5xx Server Error), and message framing.",
+      "relevance_score": 0.98,
+      "is_accessible": true,
+      "metadata": {
+        "domain": "rfc-editor.org",
+        "is_authoritative": true,
+        "note": "Authoritative IETF Standard"
+      }
+    },
+    {
+      "id": "130ba5e1-c15a-4871-96db-3a6310404a6f",
+      "source_type": "website",
+      "title": "MDN Web Docs: HTTP request methods & response status codes",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods",
+      "author_publisher": "Mozilla Developer Network (MDN)",
+      "snippet": "Comprehensive documentation on HTTP methods GET, POST, PUT, DELETE, and HTTP response status code ranges: 1xx, 2xx, 3xx, 4xx, 5xx.",
+      "relevance_score": 0.96,
+      "is_accessible": true,
+      "metadata": {
+        "domain": "developer.mozilla.org",
+        "is_authoritative": true,
+        "note": "Industry Standard Documentation"
+      }
+    },
+    {
+      "id": "ecc60ead-b80a-497d-9c30-4bd700b5a4db",
+      "source_type": "book",
+      "title": "HTTP: The Definitive Guide",
+      "url": "https://books.google.com/books?id=f_a540C52z4C",
+      "author_publisher": "David Gourley, Brian Totty (O'Reilly Media)",
+      "snippet": "Covers HTTP core concepts, transaction architecture, status codes, client/server interaction, headers, and security.",
+      "relevance_score": 0.94,
+      "is_accessible": false,
+      "metadata": {
+        "isbn": "9781565925090",
+        "publisher": "O'Reilly Media",
+        "viewability": "PARTIAL",
+        "access_limitation": "Book metadata and preview excerpt only"
+      }
+    },
+    {
+      "id": "742d91e4-dbdc-4929-85c1-a4eab1a7a153",
+      "source_type": "youtube",
+      "title": "HTTP Crash Course & Status Codes Explained",
+      "url": "https://www.youtube.com/watch?v=iYM2zFP3Zn0",
+      "author_publisher": "Traversy Media",
+      "snippet": "A clear visual explanation of HTTP protocol, client-server models, GET and POST request methods, headers, and 2xx, 4xx, and 5xx status codes.",
+      "relevance_score": 0.9,
+      "is_accessible": true,
+      "metadata": {
+        "video_id": "iYM2zFP3Zn0",
+        "channel": "Traversy Media",
+        "retrieved_via": "YouTube Data API"
+      }
+    }
+  ],
+  "factual_qc": {
+    "audit_id": "AUDIT-FACT-0001",
+    "lesson_id": "4584e76e-25ca-4e27-b441-a6b7be53d28d",
+    "overall_status": "NEEDS IMPROVEMENT",
+    "accuracy_score": 90.0,
+    "evaluation_summary": "The lesson accurately conveys core HTTP semantics (GET/POST safety and idempotency, 2xx/4xx/5xx status classes) consistent with RFC 9110 and MDN Web Docs. However, it contains citation inaccuracies: status codes 422 and 429 are not defined in RFC 9110 (they originate in RFC 4918 and RFC 6585 respectively), and the lesson cites a book available only as metadata/preview as verification for specific technical content.",
+    "issues_identified": [
+      {
+        "issue_id": "FACT-001",
+        "severity": "MEDIUM",
+        "affected_section": "Section 4 - Status Codes for Debugging (4xx Client Error)",
+        "original_statement": "422 Unprocessable Entity: The request was well-formed but semantically invalid (e.g., validation error). 429 Too Many Requests: Rate limiting has been applied.",
+        "explanation": "RFC 9110 (HTTP Semantics) does not define status codes 422 or 429. Code 422 is defined in RFC 4918 (WebDAV) and 429 in RFC 6585. While MDN documents both, listing them under a section cited to RFC 9110 implies they are part of the core HTTP/1.1 semantics specification, which is inaccurate.",
+        "supporting_evidence": "RFC 9110 Section 15 does not list 422 or 429; RFC 4918 Section 11.2 defines 422; RFC 6585 defines 429.",
+        "recommended_correction": "Add a clarifying note that 422 and 429 are extension status codes (RFC 4918 and RFC 6585 respectively), or remove them from the RFC 9110-cited list and cite the appropriate extension RFCs.",
+        "source_references": [
+          "RFC 9110",
+          "RFC 4918",
+          "RFC 6585",
+          "MDN Web Docs"
+        ],
+        "confidence_level": "HIGH"
+      },
+      {
+        "issue_id": "FACT-002",
+        "severity": "LOW",
+        "affected_section": "Sections 4 and 6 (Debugging Mindset; Real World Applications)",
+        "original_statement": "Inline citations to [HTTP: The Definitive Guide] supporting technical claims about HTTP status codes and debugging practices.",
+        "explanation": "Source [3] is accessible only as Google Books metadata/preview; the full text is not available for verification. Citing it as an authority for specific lesson content cannot be substantiated from the provided research sources.",
+        "supporting_evidence": "Source metadata for [3] indicates 'Accessible: Metadata/Preview only'.",
+        "recommended_correction": "Remove [HTTP: The Definitive Guide] from inline technical citations or re-label it as supplementary background reading only, not a verification source for specific claims.",
+        "source_references": [
+          "Source [3] metadata"
+        ],
+        "confidence_level": "HIGH"
+      },
+      {
+        "issue_id": "FACT-003",
+        "severity": "LOW",
+        "affected_section": "Section 4 - GET Requests",
+        "original_statement": "Because GET is idempotent, browsers may cache responses, and clients can safely retry failed GET requests.",
+        "explanation": "RFC 9110 defines GET as safe and idempotent, but idempotency does not guarantee that retrying a failed request is safe in all network failure scenarios (e.g., if the server processed the request but the response was lost before reaching the client). This is a common simplification but could mislead learners about distributed systems safety.",
+        "supporting_evidence": "RFC 9110 Section 9.2.1 (Safe Methods) and Section 9.2.2 (Idempotent Methods).",
+        "recommended_correction": "Because GET is safe and idempotent, browsers may cache responses, and clients can generally retry failed GET requests, though network-level failures require care.",
+        "source_references": [
+          "RFC 9110"
+        ],
+        "confidence_level": "MEDIUM"
+      }
+    ],
+    "verification_limitations": "Source [3] (HTTP: The Definitive Guide) is available only as metadata/preview, so full-text verification of its claims is impossible. Source [4] is a YouTube video; no transcript was provided, so specific verbal claims cannot be textually verified. Only Sources [1] (RFC 9110) and [2] (MDN Web Docs) were fully accessible for verification.",
+    "summary": "The lesson is factually accurate on core HTTP method semantics and status code classes per RFC 9110 and MDN, but requires minor corrections to citation attribution for extension status codes (422, 429) and an unverifiable book preview source."
+  },
+  "instructional_qc": {
+    "audit_id": "AUDIT-INST-0001",
+    "lesson_id": "4584e76e-25ca-4e27-b441-a6b7be53d28d",
+    "overall_status": "NEEDS IMPROVEMENT",
+    "pedagogical_score": 84.0,
+    "objective_alignment_assessment": "The lesson directly aligns with the stated learning objective. Sections 3 through 5 explicitly define GET and POST methods and distinguish 2xx, 4xx, and 5xx status code categories. Knowledge Check questions Q1 through Q4 directly assess these distinctions, and Q5 extends understanding to debugging application logic versus transport success, supporting the broader debugging goal. Alignment is strong overall.",
+    "clarity_assessment": "Explanations are generally accessible to beginners. Key terms such as idempotent, safe, request body, and status code classes are defined in context. Tone is appropriate and encouraging. However, Section 4 introduces 12+ specific status codes rapidly, which may overwhelm absolute beginners. RFC and MDN citations are included as references but are not explained, which is acceptable as optional background.",
+    "structure_assessment": "The instructional flow is logical and well-scaffolded: prerequisites, core concepts, detailed method and status code explanations, concrete examples, real-world context, hands-on activities, assessment, and summary. Concepts build incrementally from definition to comparison to live inspection to debugging heuristics. The sequencing supports progressive knowledge acquisition for a beginner audience.",
+    "example_quality": "Examples are relevant and use a real public API (JSONPlaceholder), which grounds abstract concepts in observable behavior. The curl GET and POST examples clearly illustrate method differences and expected status codes. The error interpretation examples (404, 401, 500) directly reinforce the objective. The JavaScript Fetch example is somewhat disconnected from the status-code debugging focus and lacks explicit status code inspection, representing a missed connection to the core objective.",
+    "activity_quality": "Hands-on activities are concrete and promote active learning. DevTools inspection and curl exploration allow learners to observe real request/response cycles, and the debugging checklist provides a transferable heuristic. However, three distinct activities are compressed into 6 minutes, which is aggressive for beginners, and reliance on an external public API introduces fragility if the endpoint is unavailable or rate-limited.",
+    "assessment_quality": "The five knowledge check questions effectively cover the core objectives: Q1 tests GET versus POST, Q2 tests 4xx classification, Q3 tests 201 Created, and Q4 tests 500 server-side attribution. Q5 is a strong higher-order question about 200 OK with invalid data, promoting debugging mindset. The primary weakness is timing: three minutes for five written questions is insufficient for beginners to read, comprehend, and formulate answers, encouraging guessing rather than retrieval practice.",
+    "time_allocation_assessment": "The total duration sums to exactly 45 minutes, satisfying the hard constraint. However, individual allocations are unrealistic for a beginner audience. The Knowledge Check is allotted only 3 minutes for five conceptual questions, and Detailed Explanations is allotted 10 minutes for two methods plus 12+ status codes and a debugging mindset. The Introduction at 3 minutes is slightly generous relative to its content. These compressions risk rushed delivery and shallow processing.",
+    "issues_identified": [
+      {
+        "issue_id": "INST-001",
+        "severity": "MEDIUM",
+        "affected_section": "Knowledge Check",
+        "original_content": "### Knowledge Check (3 mins) ... Question 1 ... Question 5",
+        "explanation": "Five conceptual questions in three minutes is infeasible for beginners, leaving less than 40 seconds per question including reading and writing. This encourages guessing and surface-level processing rather than meaningful retrieval practice.",
+        "recommended_improvement": "Extend the Knowledge Check to 6-7 minutes or reduce to 3-4 high-quality questions. Allow time for learners to write answers and briefly self-check or discuss rationale before moving to the summary."
+      },
+      {
+        "issue_id": "INST-002",
+        "severity": "MEDIUM",
+        "affected_section": "Detailed Explanations",
+        "original_content": "### Status Codes for Debugging ... 200 OK ... 504 Gateway Timeout",
+        "explanation": "Covering 12+ specific status codes across three classes in 10 minutes creates excessive cognitive load for beginners. Learners may memorize codes without understanding when to apply each distinction during debugging.",
+        "recommended_improvement": "Prioritize 2-3 representative codes per class (e.g., 200, 201, 400, 404, 500) in the main explanation. Move less common codes (422, 429, 502, 503, 504) to a reference table or additional resources section for optional review."
+      },
+      {
+        "issue_id": "INST-003",
+        "severity": "LOW",
+        "affected_section": "Hands-on Activities",
+        "original_content": "Activity 2: curl Status Code Exploration ... `curl -X POST ... -d '{}'` (expect 201)",
+        "explanation": "Expecting a specific 201 from an external public API with an empty JSON body is not guaranteed; the API may return 400, 422, or rate-limit the request. If learners receive an unexpected code, it may cause confusion rather than reinforce learning.",
+        "recommended_improvement": "Instruct learners to record whatever status code they receive and compare it against their expectation, normalizing that real APIs may behave differently. Alternatively, use a local mock server with deterministic responses."
+      },
+      {
+        "issue_id": "INST-004",
+        "severity": "LOW",
+        "affected_section": "Practical Examples",
+        "original_content": "JavaScript Fetch Example ... `.then(response => { if (!response.ok) throw new Error...`",
+        "explanation": "The Fetch example does not explicitly demonstrate inspecting status code classes (2xx/4xx/5xx), missing a direct opportunity to connect code to the core learning objective of distinguishing status categories.",
+        "recommended_improvement": "Add a console.log of response.status and a simple conditional block showing how to branch on status code class (e.g., if status >= 200 and < 300, else if >= 400 and < 500, else if >= 500)."
+      }
+    ],
+    "summary": "The lesson is well-structured and directly aligned with its objective, with strong examples and active learning components. However, timing allocations for the knowledge check and detailed explanations are unrealistic for a beginner audience, and the volume of status codes introduced creates unnecessary cognitive load. Minor adjustments to pacing, example focus, and activity expectations would significantly improve instructional effectiveness."
+  },
+  "recommendations": [
+    {
+      "id": "ff454494-5574-4853-b666-db657d0e79e2",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-0001",
+      "section_name": "Section 4 - Status Codes for Debugging (4xx Client Error)",
+      "severity": "MEDIUM",
+      "issue_text": "RFC 9110 (HTTP Semantics) does not define status codes 422 or 429. Code 422 is defined in RFC 4918 (WebDAV) and 429 in RFC 6585. While MDN documents both, listing them under a section cited to RFC 9110 implies they are part of the core HTTP/1.1 semantics specification, which is inaccurate. (Evidence: RFC 9110 Section 15 does not list 422 or 429; RFC 4918 Section 11.2 defines 422; RFC 6585 defines 429.)",
+      "original_text": "422 Unprocessable Entity: The request was well-formed but semantically invalid (e.g., validation error). 429 Too Many Requests: Rate limiting has been applied.",
+      "recommended_fix": "Add a clarifying note that 422 and 429 are extension status codes (RFC 4918 and RFC 6585 respectively), or remove them from the RFC 9110-cited list and cite the appropriate extension RFCs.",
+      "status": "APPLIED"
+    },
+    {
+      "id": "4ba5c1db-5bb5-4c86-8674-38c024200eaf",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-0001",
+      "section_name": "Sections 4 and 6 (Debugging Mindset; Real World Applications)",
+      "severity": "LOW",
+      "issue_text": "Source [3] is accessible only as Google Books metadata/preview; the full text is not available for verification. Citing it as an authority for specific lesson content cannot be substantiated from the provided research sources. (Evidence: Source metadata for [3] indicates 'Accessible: Metadata/Preview only'.)",
+      "original_text": "Inline citations to [HTTP: The Definitive Guide] supporting technical claims about HTTP status codes and debugging practices.",
+      "recommended_fix": "Remove [HTTP: The Definitive Guide] from inline technical citations or re-label it as supplementary background reading only, not a verification source for specific claims.",
+      "status": "PENDING"
+    },
+    {
+      "id": "a709f350-f780-40d2-a7af-af29cce22aa3",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-0001",
+      "section_name": "Section 4 - GET Requests",
+      "severity": "LOW",
+      "issue_text": "RFC 9110 defines GET as safe and idempotent, but idempotency does not guarantee that retrying a failed request is safe in all network failure scenarios (e.g., if the server processed the request but the response was lost before reaching the client). This is a common simplification but could mislead learners about distributed systems safety. (Evidence: RFC 9110 Section 9.2.1 (Safe Methods) and Section 9.2.2 (Idempotent Methods).)",
+      "original_text": "Because GET is idempotent, browsers may cache responses, and clients can safely retry failed GET requests.",
+      "recommended_fix": "Because GET is safe and idempotent, browsers may cache responses, and clients can generally retry failed GET requests, though network-level failures require care.",
+      "status": "PENDING"
+    },
+    {
+      "id": "2cf17b1b-bdd0-44a9-bec7-86c8674d4906",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-0001",
+      "section_name": "Knowledge Check",
+      "severity": "MEDIUM",
+      "issue_text": "Five conceptual questions in three minutes is infeasible for beginners, leaving less than 40 seconds per question including reading and writing. This encourages guessing and surface-level processing rather than meaningful retrieval practice.",
+      "original_text": "### Knowledge Check (3 mins) ... Question 1 ... Question 5",
+      "recommended_fix": "Extend the Knowledge Check to 6-7 minutes or reduce to 3-4 high-quality questions. Allow time for learners to write answers and briefly self-check or discuss rationale before moving to the summary.",
+      "status": "PENDING"
+    },
+    {
+      "id": "e53596b6-9ca7-4a99-815a-88183c81230b",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-0001",
+      "section_name": "Detailed Explanations",
+      "severity": "MEDIUM",
+      "issue_text": "Covering 12+ specific status codes across three classes in 10 minutes creates excessive cognitive load for beginners. Learners may memorize codes without understanding when to apply each distinction during debugging.",
+      "original_text": "### Status Codes for Debugging ... 200 OK ... 504 Gateway Timeout",
+      "recommended_fix": "Prioritize 2-3 representative codes per class (e.g., 200, 201, 400, 404, 500) in the main explanation. Move less common codes (422, 429, 502, 503, 504) to a reference table or additional resources section for optional review.",
+      "status": "PENDING"
+    },
+    {
+      "id": "792a8a9c-a016-4de8-b6f1-e7d03fe8d234",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-0001",
+      "section_name": "Hands-on Activities",
+      "severity": "LOW",
+      "issue_text": "Expecting a specific 201 from an external public API with an empty JSON body is not guaranteed; the API may return 400, 422, or rate-limit the request. If learners receive an unexpected code, it may cause confusion rather than reinforce learning.",
+      "original_text": "Activity 2: curl Status Code Exploration ... `curl -X POST ... -d '{}'` (expect 201)",
+      "recommended_fix": "Instruct learners to record whatever status code they receive and compare it against their expectation, normalizing that real APIs may behave differently. Alternatively, use a local mock server with deterministic responses.",
+      "status": "PENDING"
+    },
+    {
+      "id": "246f8c1c-d2d9-45ed-9cb8-c98ce700a5c9",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-0001",
+      "section_name": "Practical Examples",
+      "severity": "LOW",
+      "issue_text": "The Fetch example does not explicitly demonstrate inspecting status code classes (2xx/4xx/5xx), missing a direct opportunity to connect code to the core learning objective of distinguishing status categories.",
+      "original_text": "JavaScript Fetch Example ... `.then(response => { if (!response.ok) throw new Error...`",
+      "recommended_fix": "Add a console.log of response.status and a simple conditional block showing how to branch on status code class (e.g., if status >= 200 and < 300, else if >= 400 and < 500, else if >= 500).",
+      "status": "PENDING"
+    }
+  ]
+}

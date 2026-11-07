@@ -1,0 +1,380 @@
+{
+  "id": "96323313-2182-4649-9604-196b95d2f55c",
+  "title": "HTTP Requests and Responses",
+  "learning_objective": "Explain GET and POST methods and distinguish between 2xx, 4xx, and 5xx response status categories.",
+  "target_level": "Beginner",
+  "difficulty": "Intermediate",
+  "instructor_instructions": "Focus on API debugging practices.",
+  "estimated_duration_minutes": 45,
+  "status": "IN_REVIEW",
+  "created_at": "2026-11-06 18:02:00.275257",
+  "updated_at": "2026-11-06 18:02:00.275262",
+  "sections": [
+    {
+      "id": "351397c7-9284-4125-a182-20d24bb4f179",
+      "section_type": "introduction",
+      "title": "1. Introduction",
+      "content": "HTTP (Hypertext Transfer Protocol) is the foundation of data communication on the web. Every time you load a webpage, submit a form, or use a mobile app, your client sends HTTP requests and receives HTTP responses. Understanding how GET and POST methods work\u2014and how to interpret 2xx, 4xx, and 5xx status codes\u2014is essential for debugging APIs and building reliable client-server applications. This lesson focuses on practical API debugging practices so you can quickly identify whether an issue lies with the client request or the server response. [RFC 9110: HTTP Semantics] [MDN Web Docs: HTTP request methods & response status codes]\n\n**[Applied QC Fix - Factual]:**\n403 Forbidden: The server understood the request but refuses to authorize it. This may occur whether or not the client is authenticated.",
+      "estimated_minutes": 3,
+      "order_index": 0
+    },
+    {
+      "id": "6c0394ef-2be6-405d-8373-b37a13c4a727",
+      "section_type": "prerequisites",
+      "title": "2. Prerequisites",
+      "content": "Before starting, you should be familiar with:\\n- Basic client-server architecture (browser/client vs. server)\\n- What a URL is (scheme, host, path)\\n- Basic JSON structure (key-value pairs)\\n- Opening browser Developer Tools (F12 or right-click \u2192 Inspect)\\nNo prior networking or backend programming experience is required.",
+      "estimated_minutes": 3,
+      "order_index": 1
+    },
+    {
+      "id": "811508c7-4be8-4389-a3a0-01ba3cf4373c",
+      "section_type": "key_concepts",
+      "title": "3. Key Concepts",
+      "content": "**HTTP Request**: A message sent by a client to a server asking for a resource or action.\\n**HTTP Response**: A message sent by the server back to the client containing status information and optional data.\\n**GET**: Requests a representation of a specified resource. It should be safe and idempotent (no side effects, repeatable). [RFC 9110: HTTP Semantics]\\n**POST**: Submits an entity to the specified resource, often causing a state change or side effect (e.g., creating a record). [RFC 9110: HTTP Semantics]\\n**Status Code Classes**:\\n- **2xx Success**: The request was received, understood, and accepted.\\n- **4xx Client Error**: The request contains bad syntax or cannot be fulfilled due to client-side issues.\\n- **5xx Server Error**: The server failed to fulfill a valid request.\\n**Headers**: Metadata sent with requests and responses (e.g., Content-Type, Authorization). [MDN Web Docs: HTTP request methods & response status codes]",
+      "estimated_minutes": 6,
+      "order_index": 2
+    },
+    {
+      "id": "27b6c7da-09a3-4a3f-88f3-2fb41fbc4d64",
+      "section_type": "detailed_explanations",
+      "title": "4. Detailed Explanations",
+      "content": "## GET vs POST\\n**GET** is used to retrieve data. Parameters are typically sent in the URL query string (e.g., `/search?q=api`). GET requests should not modify server state and are idempotent\u2014making the same GET request multiple times produces the same result. [RFC 9110: HTTP Semantics]\\n\\n**POST** is used to send data to the server, usually in the request body. Common uses include creating a new user, submitting a form, or uploading a file. POST is not idempotent by default; repeating a POST may create duplicate resources.\\n\\n## Status Code Categories for Debugging\\n- **200 OK**: Standard success response. The body usually contains the requested resource.\\n- **201 Created**: Common after a successful POST; the resource was created.\\n- **204 No Content**: Success, but no body is returned.\\n- **400 Bad Request**: The server could not understand the request due to invalid syntax (e.g., malformed JSON).\\n- **401 Unauthorized**: Authentication is required or failed.\\n- **403 Forbidden**: The client is authenticated but lacks permission.\\n- **404 Not Found**: The requested resource does not exist.\\n- **500 Internal Server Error**: A generic server-side failure.\\n- **502 Bad Gateway / 503 Service Unavailable**: The server is temporarily overloaded or down.\\n\\n## API Debugging Workflow\\n1. Reproduce the request in browser DevTools \u2192 Network tab.\\n2. Check the status code: 2xx means success; 4xx means fix the client request; 5xx means contact the server team.\\n3. Inspect request headers (Content-Type, Authorization) and payload.\\n4. Inspect response headers and body for error messages.\\n5. Use tools like `curl` or Postman to isolate the issue outside the browser. [MDN Web Docs: HTTP request methods & response status codes] [HTTP: The Definitive Guide]",
+      "estimated_minutes": 10,
+      "order_index": 3
+    },
+    {
+      "id": "a9308041-5143-4468-8e6e-7204d070daa3",
+      "section_type": "practical_examples",
+      "title": "5. Practical Examples",
+      "content": "### Example 1: GET Request\\n**Request:**\\n```\\nGET /api/users/123 HTTP/1.1\\nHost: api.example.com\\nAccept: application/json\\n```\\n**Response (200 OK):**\\n```\\nHTTP/1.1 200 OK\\nContent-Type: application/json\\n\\n{\"id\": 123, \"name\": \"Alice\", \"role\": \"developer\"}\\n```\\n\\n### Example 2: POST Request\\n**Request:**\\n```\\nPOST /api/users HTTP/1.1\\nHost: api.example.com\\nContent-Type: application/json\\nAuthorization: Bearer <token>\\n\\n{\"name\": \"Bob\", \"email\": \"bob@example.com\"}\\n```\\n**Response (201 Created):**\\n```\\nHTTP/1.1 201 Created\\nContent-Type: application/json\\nLocation: /api/users/124\\n\\n{\"id\": 124, \"name\": \"Bob\", \"email\": \"bob@example.com\"}\\n```\\n\\n### Example 3: Debugging a 400 Error\\nIf you send invalid JSON to a POST endpoint, the server may respond:\\n```\\nHTTP/1.1 400 Bad Request\\nContent-Type: application/json\\n\\n{\"error\": \"Invalid JSON payload\"}\\n```\\nThis tells you to fix the client-side request body before retrying. [MDN Web Docs: HTTP request methods & response status codes]",
+      "estimated_minutes": 7,
+      "order_index": 4
+    },
+    {
+      "id": "6fff368b-67e7-43e6-a017-79579d98cd2f",
+      "section_type": "real_world_applications",
+      "title": "6. Real-World Applications",
+      "content": "- **REST APIs**: Frontend applications call backend endpoints using GET to fetch data and POST to create or update records.\\n- **Web Forms**: Traditional HTML forms use GET for searches and POST for submissions (login, registration).\\n- **Mobile Apps**: Apps communicate with backend services over HTTPS using the same HTTP semantics.\\n- **Production Debugging**: Site reliability engineers inspect 5xx spikes to detect outages, while frontend developers resolve 4xx errors caused by malformed requests or expired tokens. [HTTP: The Definitive Guide] [RFC 9110: HTTP Semantics]",
+      "estimated_minutes": 5,
+      "order_index": 5
+    },
+    {
+      "id": "d3a1c4c0-3c0c-433e-bb5b-22d94d88cc04",
+      "section_type": "hands_on_activities",
+      "title": "7. Hands-on Activities",
+      "content": "Activity: Inspect Live HTTP Traffic\\n1. Open your browser and go to https://jsonplaceholder.typicode.com/posts/1\\n2. Press F12 \u2192 Network tab \u2192 Reload the page.\\n3. Click the first request (GET /posts/1). Observe:\\n   - Request method and URL\\n   - Response status code (should be 200)\\n   - Response body (JSON)\\n4. Open https://jsonplaceholder.typicode.com/posts in a new tab. Use the browser console to send a POST:\\n   ```javascript\\n   fetch('https://jsonplaceholder.typicode.com/posts', {\\n     method: 'POST',\\n     body: JSON.stringify({title: 'test', body: 'hello', userId: 1}),\\n     headers: { 'Content-Type': 'application/json' }\\n   })\\n   ```\\n5. Check the Network tab for the POST request. Note the status code (201) and response.\\n6. Deliberately send invalid JSON in the console and observe a 400 or 500 response. Practice identifying whether the error is client-side (4xx) or server-side (5xx). [MDN Web Docs: HTTP request methods & response status codes]",
+      "estimated_minutes": 6,
+      "order_index": 6
+    },
+    {
+      "id": "9c8584a7-3d5d-4422-8a3b-564dfa13ac6c",
+      "section_type": "knowledge_check",
+      "title": "8. Knowledge Check",
+      "content": "### Question 1\\nYou send a GET request to `/api/products` and receive a **200 OK** response. What does this indicate?\\n**Answer:** The request succeeded and the server returned the requested resource. It is a 2xx success code.\\n\\n### Question 2\\nA POST request to create a user returns **400 Bad Request**. Is this a client or server issue, and what should you check first?\\n**Answer:** This is a client-side (4xx) issue. Check the request body for malformed JSON, missing required fields, or invalid data types.\\n\\n### Question 3\\nWhich HTTP method is generally used to create a new resource on the server?\\n**Answer:** POST. GET is for retrieving data; POST is for submitting data that may change server state. [RFC 9110: HTTP Semantics]\\n\\n### Question 4\\nYou see a **503 Service Unavailable** error. Should you modify your client code?\\n**Answer:** No. 5xx errors indicate a server-side problem. The client should retry later or alert the backend team.",
+      "estimated_minutes": 3,
+      "order_index": 7
+    },
+    {
+      "id": "2225c3c9-dc5d-405b-9fea-7cc822e23d64",
+      "section_type": "summary",
+      "title": "9. Summary",
+      "content": "You now understand the core HTTP request-response cycle. GET retrieves resources safely and idempotently, while POST submits data to create or modify resources. Status codes are grouped into classes: 2xx means success, 4xx means the client request needs fixing, and 5xx means the server encountered an error. By applying the debugging workflow\u2014inspecting status codes, headers, and bodies in browser DevTools\u2014you can quickly isolate API issues and determine whether they originate on the client or server. [RFC 9110: HTTP Semantics] [MDN Web Docs: HTTP request methods & response status codes]",
+      "estimated_minutes": 2,
+      "order_index": 8
+    },
+    {
+      "id": "c75f154f-86d3-433d-b7d5-d05ca3168b74",
+      "section_type": "additional_resources",
+      "title": "10. Additional Resources & References",
+      "content": "- **YouTube**: [HTTP Crash Course & Status Codes Explained](https://www.youtube.com/watch?v=iYM2zFP3Zn0) by Traversy Media \u2014 visual walkthrough of HTTP methods and status codes.\\n- **Book**: *HTTP: The Definitive Guide* by David Gourley and Brian Totty (O'Reilly Media) \u2014 comprehensive textbook reference on HTTP architecture, headers, and status codes.\\n- **Documentation**: [MDN Web Docs: HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) \u2014 authoritative reference for request methods and response codes.\\n- **Specification**: [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html) \u2014 the formal IETF standard defining HTTP methods and status code classes.",
+      "estimated_minutes": 0,
+      "order_index": 9
+    }
+  ],
+  "sources": [
+    {
+      "id": "4b05ab79-726a-4a56-ab48-38768f05deb5",
+      "source_type": "website",
+      "title": "RFC 9110: HTTP Semantics - Fielding et al.",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+      "author_publisher": "IETF / RFC Editor",
+      "snippet": "RFC 9110 defines the HTTP/1.1 semantics, including method definitions (GET, POST), status code classes (2xx Success, 4xx Client Error, 5xx Server Error), and message framing.",
+      "relevance_score": 0.98,
+      "is_accessible": true,
+      "metadata": {
+        "domain": "rfc-editor.org",
+        "is_authoritative": true,
+        "note": "Authoritative IETF Standard"
+      }
+    },
+    {
+      "id": "cf7f910c-0e67-4218-a006-4decabadc840",
+      "source_type": "website",
+      "title": "MDN Web Docs: HTTP request methods & response status codes",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods",
+      "author_publisher": "Mozilla Developer Network (MDN)",
+      "snippet": "Comprehensive documentation on HTTP methods GET, POST, PUT, DELETE, and HTTP response status code ranges: 1xx, 2xx, 3xx, 4xx, 5xx.",
+      "relevance_score": 0.96,
+      "is_accessible": true,
+      "metadata": {
+        "domain": "developer.mozilla.org",
+        "is_authoritative": true,
+        "note": "Industry Standard Documentation"
+      }
+    },
+    {
+      "id": "f2ecd858-a23b-4ca8-b48d-6edea228993b",
+      "source_type": "book",
+      "title": "HTTP: The Definitive Guide",
+      "url": "https://books.google.com/books?id=f_a540C52z4C",
+      "author_publisher": "David Gourley, Brian Totty (O'Reilly Media)",
+      "snippet": "Covers HTTP core concepts, transaction architecture, status codes, client/server interaction, headers, and security.",
+      "relevance_score": 0.94,
+      "is_accessible": false,
+      "metadata": {
+        "isbn": "9781565925090",
+        "publisher": "O'Reilly Media",
+        "viewability": "PARTIAL",
+        "access_limitation": "Book metadata and preview excerpt only"
+      }
+    },
+    {
+      "id": "3fba7433-e71a-4bb5-8c1d-00bda3b25ec4",
+      "source_type": "youtube",
+      "title": "HTTP Crash Course & Status Codes Explained",
+      "url": "https://www.youtube.com/watch?v=iYM2zFP3Zn0",
+      "author_publisher": "Traversy Media",
+      "snippet": "A clear visual explanation of HTTP protocol, client-server models, GET and POST request methods, headers, and 2xx, 4xx, and 5xx status codes.",
+      "relevance_score": 0.9,
+      "is_accessible": true,
+      "metadata": {
+        "video_id": "iYM2zFP3Zn0",
+        "channel": "Traversy Media",
+        "retrieved_via": "YouTube Data API"
+      }
+    }
+  ],
+  "factual_qc": {
+    "audit_id": "AUDIT-FACT-001",
+    "lesson_id": "96323313-2182-4649-9604-196b95d2f55c",
+    "overall_status": "NEEDS IMPROVEMENT",
+    "accuracy_score": 87.5,
+    "evaluation_summary": "The lesson accurately describes GET/POST semantics, idempotency, and the general meaning of 2xx, 4xx, and 5xx classes per RFC 9110 and MDN. However, it contains several inaccuracies in status code descriptions: 403 is incorrectly tied to authenticated clients, 502 is conflated with 503's overload/maintenance definition, and the hands-on activity sets incorrect expectations for JSONPlaceholder behavior. Minor simplifications exist for 401 and 404. Citations to RFC 9110 and MDN are appropriate, but Source [3] is preview-only and Source [4] is unverifiable from the provided snippet.",
+    "issues_identified": [
+      {
+        "issue_id": "FACT-001",
+        "severity": "MEDIUM",
+        "affected_section": "Section 4 - Detailed Explanations (Status Code Categories)",
+        "original_statement": "403 Forbidden: The client is authenticated but lacks permission.",
+        "explanation": "RFC 9110 Section 15.5.4 defines the 403 Forbidden status code as indicating that the server understood the request but refuses to authorize it. It does not state or require that the client is authenticated. A client may receive 403 without ever authenticating. Describing 403 as exclusively 'authenticated but lacks permission' can mislead learners about when this code applies and conflate it with post-authentication authorization failures.",
+        "supporting_evidence": "RFC 9110 Section 15.5.4",
+        "recommended_correction": "403 Forbidden: The server understood the request but refuses to authorize it. This may occur whether or not the client is authenticated.",
+        "source_references": [
+          "RFC 9110"
+        ],
+        "confidence_level": "HIGH"
+      },
+      {
+        "issue_id": "FACT-002",
+        "severity": "MEDIUM",
+        "affected_section": "Section 4 - Detailed Explanations (Status Code Categories)",
+        "original_statement": "502 Bad Gateway / 503 Service Unavailable: The server is temporarily overloaded or down.",
+        "explanation": "RFC 9110 Section 15.6.2 defines 502 Bad Gateway as a server acting as a gateway or proxy receiving an invalid response from an inbound/upstream server. Section 15.6.4 defines 503 Service Unavailable as the server being temporarily unable to handle the request due to overloading or maintenance. Grouping 502 with 'temporarily overloaded or down' inaccurately describes 502 and conflates two distinct server-error classes.",
+        "supporting_evidence": "RFC 9110 Sections 15.6.2 and 15.6.4",
+        "recommended_correction": "502 Bad Gateway: The server, while acting as a gateway or proxy, received an invalid response from an upstream server. 503 Service Unavailable: The server is temporarily overloaded or undergoing maintenance.",
+        "source_references": [
+          "RFC 9110"
+        ],
+        "confidence_level": "HIGH"
+      },
+      {
+        "issue_id": "FACT-003",
+        "severity": "MEDIUM",
+        "affected_section": "Section 7 - Hands-on Activities (Activity: Inspect Live HTTP Traffic, Step 6)",
+        "original_statement": "Deliberately send invalid JSON in the console and observe a 400 or 500 response.",
+        "explanation": "The activity directs learners to use https://jsonplaceholder.typicode.com/posts, a public test placeholder API. JSONPlaceholder generally accepts POST payloads without strict validation and returns 201 Created regardless of body validity; it does not reliably return 400 or 500 for invalid JSON. Telling learners to expect a 4xx or 5xx from this specific endpoint sets incorrect expectations and may confuse them when the observed behavior does not match.",
+        "supporting_evidence": "Behavior of JSONPlaceholder test API (public documentation/community knowledge); not verifiable via provided sources [1]-[4]",
+        "recommended_correction": "Use a local development server or a real API that validates request payloads, or adjust the expectation to observe how the specific test endpoint handles malformed input (which may still return 201).",
+        "source_references": [],
+        "confidence_level": "MEDIUM"
+      },
+      {
+        "issue_id": "FACT-004",
+        "severity": "LOW",
+        "affected_section": "Section 4 - Detailed Explanations (Status Code Categories)",
+        "original_statement": "404 Not Found: The requested resource does not exist.",
+        "explanation": "RFC 9110 Section 15.5.5 states that 404 indicates the origin server did not find a current representation for the target resource or is not willing to disclose that one exists. Stating simply that the resource 'does not exist' omits the possibility that the server is deliberately withholding confirmation of existence, which is a nuance relevant to security and API design.",
+        "supporting_evidence": "RFC 9110 Section 15.5.5",
+        "recommended_correction": "404 Not Found: The server did not find a current representation for the target resource, or is unwilling to disclose that one exists.",
+        "source_references": [
+          "RFC 9110"
+        ],
+        "confidence_level": "HIGH"
+      },
+      {
+        "issue_id": "FACT-005",
+        "severity": "LOW",
+        "affected_section": "Section 4 - Detailed Explanations (Status Code Categories)",
+        "original_statement": "401 Unauthorized: Authentication is required or failed.",
+        "explanation": "RFC 9110 Section 15.5.2 defines 401 Unauthorized as the request not being applied because it lacks valid authentication credentials for the target resource. The word 'failed' may imply the server attempted and rejected authentication, which is not necessarily the case; 401 is about missing or invalid credentials, not a failed authentication attempt after credentials were provided.",
+        "supporting_evidence": "RFC 9110 Section 15.5.2",
+        "recommended_correction": "401 Unauthorized: The request lacks valid authentication credentials for the target resource.",
+        "source_references": [
+          "RFC 9110"
+        ],
+        "confidence_level": "HIGH"
+      }
+    ],
+    "verification_limitations": "Source [3] (HTTP: The Definitive Guide) is accessible only as metadata/preview, so full-text claims attributed to it could not be verified page-by-page. Source [4] (YouTube video) is represented only by a snippet; video content and transcript were not provided for full-text verification. Technical verification was therefore performed primarily against RFC 9110 and MDN Web Docs.",
+    "summary": "Overall the lesson is factually sound in its core concepts but requires correction of specific status code definitions (403, 502, 503) and the JSONPlaceholder activity expectation before it can be considered fully accurate."
+  },
+  "instructional_qc": {
+    "audit_id": "AUDIT-INST-0001",
+    "lesson_id": "96323313-2182-4649-9604-196b95d2f55c",
+    "overall_status": "NEEDS IMPROVEMENT",
+    "pedagogical_score": 82.0,
+    "objective_alignment_assessment": "The lesson directly addresses both components of the stated objective: explaining GET versus POST methods and distinguishing 2xx, 4xx, and 5xx status code categories. Each concept is defined, illustrated with request/response examples, and reinforced in the knowledge check. The debugging workflow adds practical context but slightly expands scope beyond the core objective.",
+    "clarity_assessment": "Explanations are generally accessible to beginners and maintain a consistent, professional tone. However, terms such as \"idempotent,\" \"payload,\" and \"entity\" appear with minimal contextual definition, which may increase cognitive load for absolute novices. The client-versus-server error distinction is clearly framed for debugging purposes.",
+    "structure_assessment": "The instructional flow is logical, progressing from prerequisites to key concepts, detailed explanations, examples, real-world applications, hands-on practice, assessment, and summary. Scaffolding is appropriate, though the jump from conceptual definitions to raw HTTP request/response syntax in the examples section may benefit from a brief annotation guide for learners unfamiliar with HTTP message structure.",
+    "example_quality": "Examples are relevant and concrete, showing actual request/response pairs with JSON bodies and status codes. The 400 Bad Request example effectively ties status codes to client-side debugging. However, examples lack visual annotations or callouts highlighting key parts such as the method line, URI, status code line, and headers, which could help beginners parse the syntax more quickly.",
+    "activity_quality": "The hands-on activity is active and uses real browser DevTools, which is excellent for engagement and skill transfer. However, Step 6 instructs learners to deliberately send invalid JSON to observe a 400 or 500 response on jsonplaceholder.typicode.com, a public test API that may not reliably return these codes for malformed payloads, potentially causing confusion when observed behavior does not match expectations. The 6-minute allocation is also tight for beginners unfamiliar with DevTools and the fetch API.",
+    "assessment_quality": "Knowledge check questions map directly to the learning objectives and avoid trivia. They require learners to categorize status codes, assign responsibility (client versus server), and select appropriate methods. Answers are concise and include explanatory rationale, supporting formative learning.",
+    "time_allocation_assessment": "The total estimated duration is exactly 45 minutes, leaving zero buffer for learner questions, technical difficulties, or pacing overruns. Several segments (Prerequisites: 3 minutes, Hands-on Activities: 6 minutes) are optimistic for a beginner audience, creating a high risk of exceeding the 45-minute constraint.",
+    "issues_identified": [
+      {
+        "issue_id": "INST-001",
+        "severity": "MEDIUM",
+        "affected_section": "Hands-on Activities",
+        "original_content": "Deliberately send invalid JSON in the console and observe a 400 or 500 response. Practice identifying whether the error is client-side (4xx) or server-side (5xx).",
+        "explanation": "The public test API may not reliably return 400 or 500 for malformed JSON, leading to mismatched learner expectations and potential confusion during the activity.",
+        "recommended_improvement": "Provide a controlled mock endpoint or pre-captured screenshots/HAR files as a fallback. Alternatively, instruct learners to trigger a 400 by omitting the Content-Type header or sending an empty body, and use a 503 simulation only if the test environment supports it."
+      },
+      {
+        "issue_id": "INST-002",
+        "severity": "MEDIUM",
+        "affected_section": "Time Allocation",
+        "original_content": "Total Estimated Duration: 45 minutes (Max Allowed: 45 minutes)",
+        "explanation": "The schedule sums to exactly 45 minutes with no contingency buffer. Beginner pacing, DevTools setup, and network latency could easily push the lesson over the limit.",
+        "recommended_improvement": "Reduce Detailed Explanations or Real-World Applications by 3 to 5 minutes to create a buffer, or explicitly state the lesson is designed for 45 to 50 minutes to manage expectations."
+      },
+      {
+        "issue_id": "INST-003",
+        "severity": "LOW",
+        "affected_section": "Key Concepts / Detailed Explanations",
+        "original_content": "GET requests should not modify server state and are idempotent\u2014no side effects, repeatable.",
+        "explanation": "The term \"idempotent\" is introduced without a concrete analogy or comprehension check, which may increase cognitive load for absolute beginners.",
+        "recommended_improvement": "Add a simple analogy (e.g., refreshing a page is safe, but submitting a purchase form twice is not) and a one-sentence plain-language definition before using the term in comparisons."
+      },
+      {
+        "issue_id": "INST-004",
+        "severity": "LOW",
+        "affected_section": "Real-World Applications",
+        "original_content": "Frontend applications call backend endpoints using GET to fetch data and POST to create or update records.",
+        "explanation": "Technically imprecise; POST is primarily for creation, while PUT/PATCH are standard for updates. This could seed misconceptions about HTTP method semantics.",
+        "recommended_improvement": "Change the bullet to \"POST to create records\" and either mention PUT/PATCH separately or omit updates from this beginner-focused bullet."
+      }
+    ],
+    "summary": "The lesson is well-aligned with its objectives and uses strong, concrete examples plus an active hands-on component. However, it operates at the exact 45-minute ceiling with no timing buffer, relies on a public test API that may not produce the expected error codes during the activity, and introduces some terminology without sufficient scaffolding for absolute beginners. With minor adjustments to timing, activity reliability, and concept definitions, it would be an effective beginner lesson."
+  },
+  "recommendations": [
+    {
+      "id": "076b6e79-db3d-48a8-b85e-0461537a2dca",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-001",
+      "section_name": "Section 4 - Detailed Explanations (Status Code Categories)",
+      "severity": "MEDIUM",
+      "issue_text": "RFC 9110 Section 15.5.4 defines the 403 Forbidden status code as indicating that the server understood the request but refuses to authorize it. It does not state or require that the client is authenticated. A client may receive 403 without ever authenticating. Describing 403 as exclusively 'authenticated but lacks permission' can mislead learners about when this code applies and conflate it with post-authentication authorization failures. (Evidence: RFC 9110 Section 15.5.4)",
+      "original_text": "403 Forbidden: The client is authenticated but lacks permission.",
+      "recommended_fix": "403 Forbidden: The server understood the request but refuses to authorize it. This may occur whether or not the client is authenticated.",
+      "status": "APPLIED"
+    },
+    {
+      "id": "a088eca5-f701-4e32-ae86-524cf9d30862",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-001",
+      "section_name": "Section 4 - Detailed Explanations (Status Code Categories)",
+      "severity": "MEDIUM",
+      "issue_text": "RFC 9110 Section 15.6.2 defines 502 Bad Gateway as a server acting as a gateway or proxy receiving an invalid response from an inbound/upstream server. Section 15.6.4 defines 503 Service Unavailable as the server being temporarily unable to handle the request due to overloading or maintenance. Grouping 502 with 'temporarily overloaded or down' inaccurately describes 502 and conflates two distinct server-error classes. (Evidence: RFC 9110 Sections 15.6.2 and 15.6.4)",
+      "original_text": "502 Bad Gateway / 503 Service Unavailable: The server is temporarily overloaded or down.",
+      "recommended_fix": "502 Bad Gateway: The server, while acting as a gateway or proxy, received an invalid response from an upstream server. 503 Service Unavailable: The server is temporarily overloaded or undergoing maintenance.",
+      "status": "PENDING"
+    },
+    {
+      "id": "ebb0dc5e-e7fb-4594-a9f8-dfac62794b62",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-001",
+      "section_name": "Section 7 - Hands-on Activities (Activity: Inspect Live HTTP Traffic, Step 6)",
+      "severity": "MEDIUM",
+      "issue_text": "The activity directs learners to use https://jsonplaceholder.typicode.com/posts, a public test placeholder API. JSONPlaceholder generally accepts POST payloads without strict validation and returns 201 Created regardless of body validity; it does not reliably return 400 or 500 for invalid JSON. Telling learners to expect a 4xx or 5xx from this specific endpoint sets incorrect expectations and may confuse them when the observed behavior does not match. (Evidence: Behavior of JSONPlaceholder test API (public documentation/community knowledge); not verifiable via provided sources [1]-[4])",
+      "original_text": "Deliberately send invalid JSON in the console and observe a 400 or 500 response.",
+      "recommended_fix": "Use a local development server or a real API that validates request payloads, or adjust the expectation to observe how the specific test endpoint handles malformed input (which may still return 201).",
+      "status": "PENDING"
+    },
+    {
+      "id": "e6072654-b251-48f0-a943-906f5e8122d7",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-001",
+      "section_name": "Section 4 - Detailed Explanations (Status Code Categories)",
+      "severity": "LOW",
+      "issue_text": "RFC 9110 Section 15.5.5 states that 404 indicates the origin server did not find a current representation for the target resource or is not willing to disclose that one exists. Stating simply that the resource 'does not exist' omits the possibility that the server is deliberately withholding confirmation of existence, which is a nuance relevant to security and API design. (Evidence: RFC 9110 Section 15.5.5)",
+      "original_text": "404 Not Found: The requested resource does not exist.",
+      "recommended_fix": "404 Not Found: The server did not find a current representation for the target resource, or is unwilling to disclose that one exists.",
+      "status": "PENDING"
+    },
+    {
+      "id": "41b152f5-ff94-429b-a975-6656b68391cb",
+      "qc_type": "factual",
+      "audit_id": "AUDIT-FACT-001",
+      "section_name": "Section 4 - Detailed Explanations (Status Code Categories)",
+      "severity": "LOW",
+      "issue_text": "RFC 9110 Section 15.5.2 defines 401 Unauthorized as the request not being applied because it lacks valid authentication credentials for the target resource. The word 'failed' may imply the server attempted and rejected authentication, which is not necessarily the case; 401 is about missing or invalid credentials, not a failed authentication attempt after credentials were provided. (Evidence: RFC 9110 Section 15.5.2)",
+      "original_text": "401 Unauthorized: Authentication is required or failed.",
+      "recommended_fix": "401 Unauthorized: The request lacks valid authentication credentials for the target resource.",
+      "status": "PENDING"
+    },
+    {
+      "id": "bca918dd-0a95-4fc1-8c23-818b4fb3bfbd",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-0001",
+      "section_name": "Hands-on Activities",
+      "severity": "MEDIUM",
+      "issue_text": "The public test API may not reliably return 400 or 500 for malformed JSON, leading to mismatched learner expectations and potential confusion during the activity.",
+      "original_text": "Deliberately send invalid JSON in the console and observe a 400 or 500 response. Practice identifying whether the error is client-side (4xx) or server-side (5xx).",
+      "recommended_fix": "Provide a controlled mock endpoint or pre-captured screenshots/HAR files as a fallback. Alternatively, instruct learners to trigger a 400 by omitting the Content-Type header or sending an empty body, and use a 503 simulation only if the test environment supports it.",
+      "status": "PENDING"
+    },
+    {
+      "id": "b6987014-97b9-48e6-a135-6bfec2ee5218",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-0001",
+      "section_name": "Time Allocation",
+      "severity": "MEDIUM",
+      "issue_text": "The schedule sums to exactly 45 minutes with no contingency buffer. Beginner pacing, DevTools setup, and network latency could easily push the lesson over the limit.",
+      "original_text": "Total Estimated Duration: 45 minutes (Max Allowed: 45 minutes)",
+      "recommended_fix": "Reduce Detailed Explanations or Real-World Applications by 3 to 5 minutes to create a buffer, or explicitly state the lesson is designed for 45 to 50 minutes to manage expectations.",
+      "status": "PENDING"
+    },
+    {
+      "id": "ab78c2d9-6fbd-48fa-9da8-517971747886",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-0001",
+      "section_name": "Key Concepts / Detailed Explanations",
+      "severity": "LOW",
+      "issue_text": "The term \"idempotent\" is introduced without a concrete analogy or comprehension check, which may increase cognitive load for absolute beginners.",
+      "original_text": "GET requests should not modify server state and are idempotent\u2014no side effects, repeatable.",
+      "recommended_fix": "Add a simple analogy (e.g., refreshing a page is safe, but submitting a purchase form twice is not) and a one-sentence plain-language definition before using the term in comparisons.",
+      "status": "PENDING"
+    },
+    {
+      "id": "53a9a43d-8d42-418b-8894-fd4108e1e406",
+      "qc_type": "instructional",
+      "audit_id": "AUDIT-INST-0001",
+      "section_name": "Real-World Applications",
+      "severity": "LOW",
+      "issue_text": "Technically imprecise; POST is primarily for creation, while PUT/PATCH are standard for updates. This could seed misconceptions about HTTP method semantics.",
+      "original_text": "Frontend applications call backend endpoints using GET to fetch data and POST to create or update records.",
+      "recommended_fix": "Change the bullet to \"POST to create records\" and either mention PUT/PATCH separately or omit updates from this beginner-focused bullet.",
+      "status": "PENDING"
+    }
+  ]
+}
